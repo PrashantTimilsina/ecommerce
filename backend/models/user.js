@@ -28,6 +28,8 @@ const userSchema = new mongoose.Schema(
         return this.isNew;
       },
     },
+    resetToken: String,
+    resetTokenExpiry: Date,
     role: {
       type: String,
       enum: ["user", "admin"],
