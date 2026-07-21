@@ -28,6 +28,13 @@ const userSchema = new mongoose.Schema(
         return this.isNew;
       },
     },
+    cartItems: [
+      {
+        _id: false,
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        quantity: { type: Number, default: 1, min: 1 },
+      },
+    ],
     resetToken: String,
     resetTokenExpiry: Date,
     role: {

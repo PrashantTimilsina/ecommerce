@@ -3,9 +3,12 @@ import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
 import globalErrorHandler from "./middlewares/errorMiddleware.js";
-
+import productRoutes from "./routes/product.routes.js";
+import reviewRoutes from "./routes/reviews.routes.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
 const app = express();
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
@@ -15,6 +18,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use(globalErrorHandler);
 
 export default app;

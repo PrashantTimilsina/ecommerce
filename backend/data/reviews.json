@@ -1,0 +1,98 @@
+[
+  {
+    "productSlug": "classic-cotton-hoodie",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Super comfortable and fits true to size."
+  },
+  {
+    "productSlug": "classic-cotton-hoodie",
+    "userEmail": "priya@example.com",
+    "rating": 4,
+    "comment": "Great quality, wish it had more color options."
+  },
+  {
+    "productSlug": "classic-cotton-hoodie",
+    "userEmail": "sneha@example.com",
+    "rating": 5,
+    "comment": "My favorite hoodie now, super warm."
+  },
+  {
+    "productSlug": "slim-fit-formal-shirt",
+    "userEmail": "rohan@example.com",
+    "rating": 5,
+    "comment": "Perfect for office wear, doesn't wrinkle easily."
+  },
+  {
+    "productSlug": "slim-fit-formal-shirt",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Fits well but runs slightly small."
+  },
+  {
+    "productSlug": "sequin-party-dress",
+    "userEmail": "priya@example.com",
+    "rating": 4,
+    "comment": "Beautiful dress, sizing runs slightly small."
+  },
+  {
+    "productSlug": "sequin-party-dress",
+    "userEmail": "sneha@example.com",
+    "rating": 5,
+    "comment": "Got so many compliments wearing this."
+  },
+  {
+    "productSlug": "performance-gym-tank",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Breathable and doesn't get soaked in sweat."
+  },
+  {
+    "productSlug": "performance-gym-tank",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Good quality but color faded a bit after washing."
+  },
+  {
+    "productSlug": "denim-jacket",
+    "userEmail": "rohan@example.com",
+    "rating": 5,
+    "comment": "Classic look, goes with everything."
+  },
+  {
+    "productSlug": "denim-jacket",
+    "userEmail": "priya@example.com",
+    "rating": 4,
+    "comment": "Solid denim, slightly heavier than expected."
+  },
+  {
+    "productSlug": "tailored-blazer",
+    "userEmail": "sneha@example.com",
+    "rating": 5,
+    "comment": "Fit like it was made for me, great for interviews."
+  },
+  {
+    "productSlug": "metallic-cocktail-top",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Eye catching, wore it to a New Year party."
+  },
+  {
+    "productSlug": "compression-leggings",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Doesn't slide down during workouts, love it."
+  },
+  {
+    "productSlug": "relaxed-fit-joggers",
+    "userEmail": "rohan@example.com",
+    "rating": 4,
+    "comment": "Comfortable for lounging around the house."
+  },
+  {
+    "productSlug": "oxford-dress-shirt",
+    "userEmail": "priya@example.com",
+    "rating": 5,
+    "comment": "Crisp and clean, exactly what I needed for work."
+  }
+]

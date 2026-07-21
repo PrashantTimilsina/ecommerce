@@ -1,0 +1,112 @@
+[
+  {
+    "title": "Classic Cotton Hoodie",
+    "description": "A soft, everyday hoodie made from breathable cotton blend fabric.",
+    "price": 2499,
+    "discount": 10,
+    "category": "Casual",
+    "images": ["https://loremflickr.com/600/600/hoodie"],
+    "colors": ["#000000", "#808080", "#000080"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 50
+  },
+  {
+    "title": "Slim Fit Formal Shirt",
+    "description": "Wrinkle-resistant formal shirt tailored for a slim, sharp fit.",
+    "price": 1899,
+    "discount": 0,
+    "category": "Formal",
+    "images": ["https://loremflickr.com/600/600/formalshirt"],
+    "colors": ["#FFFFFF", "#87CEEB"],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "stock": 30
+  },
+  {
+    "title": "Sequin Party Dress",
+    "description": "Eye-catching sequin dress perfect for evening parties and events.",
+    "price": 3299,
+    "discount": 15,
+    "category": "Party",
+    "images": ["https://loremflickr.com/600/600/partydress"],
+    "colors": ["#D4AF37", "#000000"],
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 20
+  },
+  {
+    "title": "Performance Gym Tank",
+    "description": "Moisture-wicking tank top built for high-intensity workouts.",
+    "price": 999,
+    "discount": 5,
+    "category": "Gym",
+    "images": ["https://loremflickr.com/600/600/tanktop"],
+    "colors": ["#000000", "#FF0000", "#FFFFFF"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 75
+  },
+  {
+    "title": "Denim Jacket",
+    "description": "A timeless denim jacket that pairs with almost anything in your closet.",
+    "price": 3599,
+    "discount": 0,
+    "category": "Casual",
+    "images": ["https://loremflickr.com/600/600/denimjacket"],
+    "colors": ["#4169A1", "#1C2841"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 40
+  },
+  {
+    "title": "Tailored Blazer",
+    "description": "A sharply tailored blazer for interviews, meetings, and formal events.",
+    "price": 5499,
+    "discount": 20,
+    "category": "Formal",
+    "images": ["https://loremflickr.com/600/600/blazer"],
+    "colors": ["#1C1C1C", "#5C4033"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 15
+  },
+  {
+    "title": "Metallic Cocktail Top",
+    "description": "A statement metallic top designed to stand out at any party.",
+    "price": 1799,
+    "discount": 10,
+    "category": "Party",
+    "images": ["https://loremflickr.com/600/600/cocktailtop"],
+    "colors": ["#C0C0C0", "#B87333"],
+    "sizes": ["XS", "S", "M"],
+    "stock": 25
+  },
+  {
+    "title": "Compression Leggings",
+    "description": "High-stretch compression leggings built for squats, runs, and everything between.",
+    "price": 1299,
+    "discount": 0,
+    "category": "Gym",
+    "images": ["https://loremflickr.com/600/600/leggings"],
+    "colors": ["#000000", "#2F4F4F"],
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 60
+  },
+  {
+    "title": "Relaxed Fit Joggers",
+    "description": "Everyday joggers with a tapered fit and soft fleece lining.",
+    "price": 1599,
+    "discount": 5,
+    "category": "Casual",
+    "images": ["https://loremflickr.com/600/600/joggers"],
+    "colors": ["#808080", "#000000", "#6B8E23"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 55
+  },
+  {
+    "title": "Oxford Dress Shirt",
+    "description": "A crisp Oxford shirt suitable for both office wear and formal occasions.",
+    "price": 2199,
+    "discount": 0,
+    "category": "Formal",
+    "images": ["https://loremflickr.com/600/600/oxfordshirt"],
+    "colors": ["#FFFFFF", "#ADD8E6", "#F5F5DC"],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "stock": 35
+  }
+]

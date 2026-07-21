@@ -1,26 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
-const reviewSchema = new mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 5,
-    },
-    comment: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-  },
-  { timestamps: true },
-);
+
 const productSchema = new mongoose.Schema(
   {
     title: {
@@ -30,7 +10,6 @@ const productSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-
       unique: true,
       lowercase: true,
       trim: true,
@@ -64,12 +43,22 @@ const productSchema = new mongoose.Schema(
     ],
     colors: [String],
     sizes: [String],
-    rating: Number,
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    numReviews: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     stock: { type: Number, required: true, min: 0 },
-    reviews: [reviewSchema],
   },
   { timestamps: true },
 );
+
 productSchema.pre("save", function (next) {
   if (!this.isModified("title")) return next();
 
@@ -80,5 +69,6 @@ productSchema.pre("save", function (next) {
 
   next();
 });
+
 const Product = mongoose.model("Product", productSchema);
 export default Product;
