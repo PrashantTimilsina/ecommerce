@@ -1,54 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Product } from "@/types/product";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-export interface Product {
-  id: number;
-  name: string;
-  image: string;
-  rating: number;
-  price: number;
-  originalPrice?: number;
-  discountPercent?: number;
-}
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: "T-shirt with Tape Details",
-    image: "/products/tshirt-black.png",
-    rating: 4.5,
-    price: 120,
-  },
-  {
-    id: 2,
-    name: "Skinny Fit Jeans",
-    image: "/products/jeans.png",
-    rating: 3.5,
-    price: 240,
-    originalPrice: 260,
-    discountPercent: 20,
-  },
-  {
-    id: 3,
-    name: "Checkered Shirt",
-    image: "/products/checkered-shirt.png",
-    rating: 4.5,
-    price: 180,
-  },
-  {
-    id: 4,
-    name: "Sleeve Striped T-shirt",
-    image: "/products/striped-tshirt.png",
-    rating: 4.5,
-    price: 130,
-    originalPrice: 160,
-    discountPercent: 30,
-  },
-];
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -74,31 +30,36 @@ function StarRating({ rating }: { rating: number }) {
 
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <Link href={`/product-detail`}>
+    <Link href={`/product-detail/${product.slug}`} className="group">
       <div className="flex flex-col gap-3">
         <div className="relative bg-muted rounded-2xl aspect-square overflow-hidden">
           <Image
-            src={product.image}
-            alt={product.name}
+            src={product.images[0]}
+            alt={product.title}
             fill
             className="object-cover"
           />
         </div>
 
-        <h3 className="font-semibold text-base truncate">{product.name}</h3>
+        <h3 className="font-semibold text-base truncate">{product.title}</h3>
 
         <StarRating rating={product.rating} />
 
         <div className="flex items-center gap-2">
-          <span className="font-bold text-xl">${product.price}</span>
-          {product.originalPrice && (
-            <span className="text-muted-foreground line-through text-lg">
-              ${product.originalPrice}
+          {" "}
+          {product.discount > 0 && (
+            <span className="text-muted-foreground  text-lg">
+            ${parseInt((product.price - (product.price * product.discount) / 100).toFixed(2))}
             </span>
           )}
-          {product.discountPercent && (
+          <span
+            className={`font-bold text-lg ${product.discount > 0 ? "line-through text-muted-foreground" : ""}`}
+          >
+            ${product.price}
+          </span>
+          {product.discount > 0 && (
             <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">
-              -{product.discountPercent}%
+              -{product.discount}%
             </span>
           )}
         </div>
@@ -107,7 +68,9 @@ export function ProductCard({ product }: { product: Product }) {
   );
 }
 
-function NewArrivals() {
+function NewArrival({ products: defaultProducts }: { products: Product[] }) {
+  const products = defaultProducts.slice(0, 8);
+
   return (
     <section className="w-full py-12">
       <div className="container mx-auto px-4">
@@ -117,7 +80,7 @@ function NewArrivals() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
 
@@ -136,4 +99,4 @@ function NewArrivals() {
   );
 }
 
-export default NewArrivals;
+export default NewArrival;

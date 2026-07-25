@@ -12,7 +12,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Ecommerce",
+  title: "Shop.co",
   description: "A curated marketplace. Every seller earns their place.",
 };
 

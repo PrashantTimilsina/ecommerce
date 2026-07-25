@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import Image from "next/image";
 import { Star, ChevronRight, Minus, Plus } from "lucide-react";
+import { Product } from "@/types/product";
 
 const thumbnails = [
   "/products/tshirt-1.png",
@@ -18,7 +19,7 @@ const colors = [
 ];
 
 const sizes = ["Small", "Medium", "Large", "X-Large"];
-function ProductHero() {
+function ProductHero({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("Large");
@@ -43,7 +44,7 @@ function ProductHero() {
           <div className="flex flex-col-reverse sm:flex-row gap-4">
             {/* Thumbnails */}
             <div className="flex sm:flex-col gap-3">
-              {thumbnails.map((thumb, i) => (
+              {product.images.map((thumb, i) => (
                 <button
                   type="button"
                   key={i}
@@ -67,7 +68,7 @@ function ProductHero() {
             {/* Main image */}
             <div className="relative flex-1 aspect-square rounded-2xl overflow-hidden bg-muted">
               <Image
-                src={thumbnails[selectedImage]}
+                src={product.images[selectedImage]}
                 alt="One Life Graphic T-shirt"
                 fill
                 className="object-cover"
@@ -79,7 +80,7 @@ function ProductHero() {
           {/* Right: Product info */}
           <div className="flex flex-col gap-5">
             <h1 className="font-extrabold text-2xl sm:text-3xl tracking-wide">
-              ONE LIFE GRAPHIC T-SHIRT
+              {product.title}
             </h1>
 
             {/* Rating */}
@@ -89,31 +90,38 @@ function ProductHero() {
                   <Star
                     key={i}
                     className={`h-4 w-4 ${
-                      i < 4
+                      i < Math.round(product.rating)
                         ? "fill-yellow-400 text-yellow-400"
                         : "fill-muted text-muted"
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-sm text-muted-foreground">4.5/5</span>
+              <span className="text-sm text-muted-foreground">{product.rating}/5</span>
             </div>
 
             {/* Price */}
-            <div className="flex items-center gap-3">
-              <span className="font-bold text-3xl">$260</span>
-              <span className="text-muted-foreground line-through text-2xl">
-                $300
-              </span>
-              <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2.5 py-1">
-                -40%
-              </span>
-            </div>
+             <div className="flex items-center gap-2">
+          {" "}
+          {product.discount > 0 && (
+            <span className="text-muted-foreground  text-lg">
+            ${parseInt((product.price - (product.price * product.discount) / 100).toFixed(2))}
+            </span>
+          )}
+          <span
+            className={`font-bold text-lg ${product.discount > 0 ? "line-through text-muted-foreground" : ""}`}
+          >
+            ${product.price}
+          </span>
+          {product.discount > 0 && (
+            <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">
+              -{product.discount}%
+            </span>
+          )}
+        </div>
 
             <p className="text-sm text-muted-foreground leading-relaxed">
-              This graphic t-shirt which is perfect for any occasion. Crafted
-              from a soft and comfortable fabric, it offers superior comfort and
-              style.
+             {product.description}
             </p>
 
             <hr className="border-border" />
@@ -124,16 +132,16 @@ function ProductHero() {
                 Select Colors
               </span>
               <div className="flex items-center gap-3">
-                {colors.map((color, i) => (
+                {product.colors.map((color, i) => (
                   <button
                     type="button"
-                    key={color.name}
+                    key={color}
                     onClick={() => setSelectedColor(i)}
-                    aria-label={color.name}
-                    className={`h-8 w-8 rounded-full flex items-center justify-center ring-offset-2 transition-all ${
+                    aria-label={color}
+                    className={`h-8 w-8 cursor-pointer rounded-full flex items-center justify-center ring-offset-2 transition-all ${
                       selectedColor === i ? "ring-2 ring-foreground" : "ring-0"
                     }`}
-                    style={{ backgroundColor: color.hex }}
+                    style={{ backgroundColor: color }}
                   />
                 ))}
               </div>
@@ -145,12 +153,12 @@ function ProductHero() {
             <div className="flex flex-col gap-3">
               <span className="text-sm text-muted-foreground">Choose Size</span>
               <div className="flex flex-wrap items-center gap-3">
-                {sizes.map((size) => (
+                {product.sizes.map((size) => (
                   <button
                     type="button"
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 sm:px-5 py-2.5 rounded-full text-sm transition-colors ${
+                    className={`px-4 sm:px-5 py-2.5 cursor-pointer rounded-full text-sm transition-colors ${
                       selectedSize === size
                         ? "bg-foreground text-background"
                         : "bg-muted text-muted-foreground hover:bg-muted/70"
@@ -188,7 +196,7 @@ function ProductHero() {
 
               <button
                 type="button"
-                className="flex-1 rounded-full h-12 text-base cursor-pointer"
+                className="flex-1 rounded-full h-12 text-base cursor-pointer bg-black text-white"
               >
                 Add to Cart
               </button>

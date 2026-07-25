@@ -1,16 +1,31 @@
 import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 export const protect = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.status(401).json({ message: "Not authorized" });
+    let token;
+    if (req.headers.authorization?.startsWith("Bearer")) {
+      token = req.headers.authorization.split(" ")[1];
     }
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ success: false, message: "You are not logged in." });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const currentUser = await User.findById(decoded.id).select("role");
+    if (!currentUser) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User no longer exists." });
+    }
+
+    req.user = currentUser;
     next();
-  } catch (error) {
+  } catch (err) {
     return res
       .status(401)
-      .json({ message: "Invalid token", error: error.message });
+      .json({ success: false, message: "Invalid or expired token." });
   }
 };

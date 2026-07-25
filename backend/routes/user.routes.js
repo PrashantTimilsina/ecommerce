@@ -4,7 +4,7 @@ import * as authMiddleware from "../middlewares/authMiddleware.js";
 import * as userController from "./../controllers/user.controller.js";
 
 const router = express.Router();
-router.get("/all", authMiddleware.protect, userController.getAllUsers);
+
 router.post("/signup", authController.signup);
 /**
  * @swagger

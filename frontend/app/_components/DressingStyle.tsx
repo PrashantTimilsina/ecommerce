@@ -13,25 +13,28 @@ const styles: DressStyle[] = [
   {
     id: 1,
     name: "Casual",
-    image: "/dress-styles/casual.png",
+    image: "https://loremflickr.com/1600/1200/casual,streetwear,fashion",
     colSpan: "md:col-span-2",
   },
   {
     id: 2,
     name: "Formal",
-    image: "/dress-styles/formal.png",
+    image:
+      "https://img4.dhresource.com/webp/m/0x0/f3/albu/ys/l/01/07ee527c-0747-4dd9-ba61-47ba4c7bf52a.jpg",
     colSpan: "md:col-span-3",
   },
   {
     id: 3,
     name: "Party",
-    image: "/dress-styles/party.png",
+    image:
+      "https://www.bonsoir.co.in/cdn/shop/files/Navy_blue_Bandhgala_Blazer.jpg?crop=center&height=4927&v=1748426215&width=3285",
     colSpan: "md:col-span-3",
   },
   {
     id: 4,
     name: "Gym",
-    image: "/dress-styles/gym.png",
+    image:
+      "https://t3.ftcdn.net/jpg/01/13/24/70/360_F_113247091_aPZUthVxVscZhN6GGngRzKOoYjcXC0Pc.jpg",
     colSpan: "md:col-span-2",
   },
 ];
@@ -39,10 +42,20 @@ const styles: DressStyle[] = [
 function DressStyleCard({ style }: { style: DressStyle }) {
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden bg-muted h-56 sm:h-64 md:h-72 ${style.colSpan}`}
+      className={`group relative rounded-2xl overflow-hidden bg-muted h-56 sm:h-64 md:h-72 ${style.colSpan}`}
     >
-      <Image src={style.image} alt={style.name} fill className="object-cover" />
-      <span className="absolute top-4 left-4 sm:top-6 sm:left-6 font-bold text-lg sm:text-xl text-black">
+      <Image
+        src={style.image}
+        alt={style.name}
+        fill
+        className="object-cover brightness-75 contrast-105 saturate-95 transition-transform duration-300 ease-out group-hover:scale-105"
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      />
+
+      {/* dim overlay: darker at bottom-left where the label sits, subtle everywhere else */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+
+      <span className="absolute top-4 left-4 sm:top-6 sm:left-6 font-bold text-lg sm:text-xl text-white drop-shadow-md">
         {style.name}
       </span>
     </div>

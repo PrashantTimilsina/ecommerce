@@ -14,6 +14,22 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "loremflickr.com",
+      },
+      {
+        protocol: "https",
+        hostname: "img4.dhresource.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.bonsoir.co.in",
+      },
+      {
+        protocol: "https",
+        hostname: "t3.ftcdn.net",
+      },
     ],
   },
 };

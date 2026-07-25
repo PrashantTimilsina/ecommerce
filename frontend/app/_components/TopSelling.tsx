@@ -1,42 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { type Product, ProductCard } from "./NewArrival";
+import { ProductCard } from "./NewArrival";
+import { Product } from "@/types/product";
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Vertical Striped Shirt",
-    image: "/products/vertical-striped-shirt.png",
-    rating: 5,
-    price: 212,
-    originalPrice: 232,
-    discountPercent: 20,
-  },
-  {
-    id: 2,
-    name: "Courage Graphic T-shirt",
-    image: "/products/courage-tshirt.png",
-    rating: 4,
-    price: 145,
-  },
-  {
-    id: 3,
-    name: "Loose Fit Bermuda Shorts",
-    image: "/products/bermuda-shorts.png",
-    rating: 3,
-    price: 80,
-  },
-  {
-    id: 4,
-    name: "Faded Skinny Jeans",
-    image: "/products/faded-skinny-jeans.png",
-    rating: 4.5,
-    price: 210,
-  },
-];
 
-function TopSelling() {
+
+function TopSelling({products:defaultProduct}:{products: Product[]}) {
+  
+  const products=defaultProduct.slice(0,4);
   return (
     <section className="w-full py-8 sm:py-10 md:py-12">
       <div className="container mx-auto px-4">
@@ -46,7 +18,7 @@ function TopSelling() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
 

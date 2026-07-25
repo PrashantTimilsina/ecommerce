@@ -1,22 +1,31 @@
+import { getAllProducts } from "@/api/product.api";
 import HappyCustomers from "./_components/Customers";
 import BrowseByDressStyle from "./_components/DressingStyle";
 
 import Hero from "./_components/Hero";
+import NewArrival from "./_components/NewArrival";
 
-import NewArrivals from "./_components/NewArrival";
+
+
+
 import TopSelling from "./_components/TopSelling";
+import { Product } from "@/types/product";
 
-function App() {
+async function App() {
+  const response=await getAllProducts();
+  const products=response.data as Product[];
+
+
   return (
     <main>
       <section>
         <Hero />
       </section>
       <section>
-        <NewArrivals />
+        <NewArrival products={products} />
       </section>
       <section>
-        <TopSelling />
+        <TopSelling products={products} />
       </section>
       <section>
         <BrowseByDressStyle />

@@ -1,11 +1,9 @@
 import Product from "../models/product.js";
 import User from "../models/user.js";
+import ApiFeatures from "../utils/apiFeatures.js";
 import { catchAsync } from "../utils/catchAsync.js";
 import { cookieOptions } from "./auth.controller.js";
-export const getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-  res.status(200).json({ status: true, data: users });
-});
+
 export const getCurrentUser = catchAsync(async (req, res) => {
   const user = await User.findById(req.user.id);
   if (!user) {

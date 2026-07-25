@@ -1,8 +1,16 @@
 import Product from "../models/product.js";
+import ApiFeatures from "../utils/apiFeatures.js";
 import { catchAsync } from "../utils/catchAsync.js";
 
 export const getAllProducts = catchAsync(async (req, res) => {
-  const products = await Product.find();
+  const features = new ApiFeatures(Product.find(), req.query)
+    .filter()
+    .search(["title", "description"])
+    .select()
+    .sort()
+    .paginate();
+  const products = await features.query;
+
   res.status(200).json({ status: true, data: products });
 });
 export const getProductBySlug = catchAsync(async (req, res) => {

@@ -22,7 +22,7 @@ function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <div className="bg-[#F0F0F0] p-4">
+    <div className="bg-[#F0F0F0] p-4 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/">
