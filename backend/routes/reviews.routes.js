@@ -1,5 +1,8 @@
 import express from "express";
 import * as reviewController from "./../controllers/review.controller.js";
+import * as authMiddleware from "./../middlewares/authMiddleware.js";
 const router = express.Router();
 router.get("/", reviewController.getAllReviews);
+router.get("/:productId", reviewController.getReviewBySlug);
+router.post("/", authMiddleware.protect, reviewController.createReview);
 export default router;

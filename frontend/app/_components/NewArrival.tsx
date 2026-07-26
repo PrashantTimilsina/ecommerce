@@ -9,20 +9,27 @@ import Link from "next/link";
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-1">
-      {Array.from({ length: 5 }).map((_, i) => {
-        const filled = i < Math.floor(rating);
-        const half = !filled && i < rating;
-        return (
-          <Star
-            key={i}
-            className={`h-4 w-4 ${
-              filled || half
-                ? "fill-yellow-400 text-yellow-400"
-                : "fill-muted text-muted"
-            }`}
-          />
-        );
-      })}
+      <div className="flex items-center gap-0.5">
+        {Array.from({ length: 5 }).map((_, i) => {
+          // how "full" this particular star should be, from 0 to 1
+          const fillPercent = Math.min(Math.max(rating - i, 0), 1) * 100;
+
+          return (
+            <div key={i} className="relative h-4 w-4">
+              {/* background (empty) star */}
+              <Star className="absolute inset-0 h-4 w-4 fill-muted text-muted" />
+
+              {/* foreground (filled) star, clipped to fillPercent width */}
+              <div
+                className="absolute inset-0 overflow-hidden"
+                style={{ width: `${fillPercent}%` }}
+              >
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              </div>
+            </div>
+          );
+        })}
+      </div>
       <span className="text-sm text-muted-foreground ml-1">{rating}/5</span>
     </div>
   );
@@ -48,8 +55,14 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="flex items-center gap-2">
           {" "}
           {product.discount > 0 && (
-            <span className="text-muted-foreground  text-lg">
-            ${parseInt((product.price - (product.price * product.discount) / 100).toFixed(2))}
+            <span className=" text-lg font-bold">
+              $
+              {parseInt(
+                (
+                  product.price -
+                  (product.price * product.discount) / 100
+                ).toFixed(2)
+              )}
             </span>
           )}
           <span

@@ -5,20 +5,32 @@ import Image from "next/image";
 import { Star, ChevronRight, Minus, Plus } from "lucide-react";
 import { Product } from "@/types/product";
 
-const thumbnails = [
-  "/products/tshirt-1.png",
-  "/products/tshirt-2.png",
-  "/products/tshirt-3.png",
-  "/products/tshirt-4.png",
-];
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => {
+        // how "full" this particular star should be, from 0 to 1
+        const fillPercent = Math.min(Math.max(rating - i, 0), 1) * 100;
 
-const colors = [
-  { name: "Olive", hex: "#3F3D2E" },
-  { name: "Navy", hex: "#1E2A4A" },
-  { name: "Green", hex: "#2A4A3E" },
-];
+        return (
+          <div key={i} className="relative h-4 w-4">
+            {/* background (empty) star */}
+            <Star className="absolute inset-0 h-4 w-4 fill-muted text-muted" />
 
-const sizes = ["Small", "Medium", "Large", "X-Large"];
+            {/* foreground (filled) star, clipped to fillPercent width */}
+            <div
+              className="absolute inset-0 overflow-hidden"
+              style={{ width: `${fillPercent}%` }}
+            >
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function ProductHero({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
@@ -27,17 +39,8 @@ function ProductHero({ product }: { product: Product }) {
 
   return (
     <div className="w-full">
-      <div className="container mx-auto px-4 py-6">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-          <span className="cursor-pointer hover:text-foreground">Home</span>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="cursor-pointer hover:text-foreground">Shop</span>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="cursor-pointer hover:text-foreground">Men</span>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground">T-shirts</span>
-        </div>
+      <div className="container mx-auto px-4 py-8">
+        
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left: Gallery */}
@@ -85,43 +88,40 @@ function ProductHero({ product }: { product: Product }) {
 
             {/* Rating */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < Math.round(product.rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "fill-muted text-muted"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground">{product.rating}/5</span>
+              <StarRating rating={product.rating} />
+              <span className="text-sm text-muted-foreground">
+                {product.rating}/5
+              </span>
             </div>
 
             {/* Price */}
-             <div className="flex items-center gap-2">
-          {" "}
-          {product.discount > 0 && (
-            <span className="text-muted-foreground  text-lg">
-            ${parseInt((product.price - (product.price * product.discount) / 100).toFixed(2))}
-            </span>
-          )}
-          <span
-            className={`font-bold text-lg ${product.discount > 0 ? "line-through text-muted-foreground" : ""}`}
-          >
-            ${product.price}
-          </span>
-          {product.discount > 0 && (
-            <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">
-              -{product.discount}%
-            </span>
-          )}
-        </div>
+            <div className="flex items-center gap-2">
+              {" "}
+              {product.discount > 0 && (
+                <span className="text-muted-foreground  text-lg font-bold">
+                  $
+                  {parseInt(
+                    (
+                      product.price -
+                      (product.price * product.discount) / 100
+                    ).toFixed(2)
+                  )}
+                </span>
+              )}
+              <span
+                className={`font-semibold text-lg ${product.discount > 0 ? "line-through text-muted-foreground" : ""}`}
+              >
+                ${product.price}
+              </span>
+              {product.discount > 0 && (
+                <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">
+                  -{product.discount}%
+                </span>
+              )}
+            </div>
 
             <p className="text-sm text-muted-foreground leading-relaxed">
-             {product.description}
+              {product.description}
             </p>
 
             <hr className="border-border" />

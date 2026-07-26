@@ -51,7 +51,7 @@ function FAQ() {
         <Accordion className="w-full">
           {faqs.map((faq, i) => (
             <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger className="text-left text-base sm:text-lg font-semibold cursor-pointer">
+              <AccordionTrigger className="text-left text-base sm:text-lg  cursor-pointer hover:no-underline font-normal">
                 {faq.question}
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-muted-foreground leading-relaxed">
