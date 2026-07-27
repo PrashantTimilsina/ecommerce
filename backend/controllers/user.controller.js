@@ -2,7 +2,7 @@ import Product from "../models/product.js";
 import User from "../models/user.js";
 import ApiFeatures from "../utils/apiFeatures.js";
 import { catchAsync } from "../utils/catchAsync.js";
-import { cookieOptions } from "./auth.controller.js";
+// import { cookieOptions } from "./auth.controller.js";
 
 export const getCurrentUser = catchAsync(async (req, res) => {
   const user = await User.findById(req.user.id);
@@ -32,7 +32,7 @@ export const deleteUserProfile = catchAsync(async (req, res) => {
   if (!user) {
     return res.status(404).json({ status: false, message: "User not found" });
   }
-  res.clearCookie("token", cookieOptions);
+  // res.clearCookie("token", cookieOptions);
   return res
     .status(200)
     .json({ status: true, message: "User deleted successfully" });

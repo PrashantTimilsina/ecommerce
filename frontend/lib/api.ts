@@ -71,10 +71,10 @@ export const myFetch = async <T>(
 
 export async function getToken() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("vtoken")?.value;
+  const token = cookieStore.get("token")?.value;
 
   if (!token) {
-    redirect("/sign-in");
+    redirect("/login");
   }
 
   return token;

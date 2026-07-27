@@ -13,6 +13,7 @@ import {
 import { Review } from "@/types/review";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { postReviewAction } from "@/action/product.action";
 
 function StarRow({ rating }: { rating: number }) {
   return (
@@ -32,6 +33,9 @@ function StarRow({ rating }: { rating: number }) {
 }
 
 function ReviewCard({ review }: { review: Review }) {
+  async function handleAddReview(){
+   
+  }
   return (
     <div className="border border-border rounded-2xl p-5 flex flex-col gap-3 bg-background">
       <div className="flex items-start justify-between">

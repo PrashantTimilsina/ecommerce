@@ -9,12 +9,12 @@ const signToken = (id) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
-export const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-};
+// export const cookieOptions = {
+//   httpOnly: true,
+//   secure: process.env.NODE_ENV === "production",
+//   sameSite: "lax",
+//   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+// };
 
 export const signup = catchAsync(async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -42,13 +42,12 @@ export const signup = catchAsync(async (req, res) => {
   user.password = undefined;
 
   const token = signToken(user._id);
-  res.cookie("token", token, cookieOptions);
+  // res.cookie("token", token, cookieOptions);
 
   return res.status(201).json({
     status: true,
     message: "User created successfully",
-
-    user,
+    data: { token, user },
   });
 });
 export const login = catchAsync(async (req, res) => {
@@ -73,10 +72,11 @@ export const login = catchAsync(async (req, res) => {
   }
   user.password = undefined;
   const token = signToken(user._id);
-  res.cookie("token", token, cookieOptions);
+  // res.cookie("token", token, cookieOptions);
+
   return res
     .status(200)
-    .json({ status: true, message: "Login successful", user });
+    .json({ status: true, message: "Login successful", data: { token, user } });
 });
 export const changePassword = catchAsync(async (req, res) => {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;

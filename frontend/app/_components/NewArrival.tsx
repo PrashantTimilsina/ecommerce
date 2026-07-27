@@ -35,51 +35,61 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/product-detail/${product.slug}`} className="group">
       <div className="flex flex-col gap-3">
-        <div className="relative bg-muted rounded-2xl aspect-square overflow-hidden">
+        <div className="relative bg-muted rounded-2xl aspect-square overflow-hidden ring-1 ring-border/50 transition-shadow duration-300 group-hover:shadow-lg">
           <Image
             src={product.images[0]}
             alt={product.title}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           />
-        </div>
 
-        <h3 className="font-semibold text-base truncate">{product.title}</h3>
-
-        <StarRating rating={product.rating} />
-
-        <div className="flex items-center gap-2">
-          {" "}
           {product.discount > 0 && (
-            <span className=" text-lg font-bold">
-              $
-              {parseInt(
-                (
-                  product.price -
-                  (product.price * product.discount) / 100
-                ).toFixed(2)
-              )}
-            </span>
-          )}
-          <span
-            className={`font-bold text-lg ${product.discount > 0 ? "line-through text-muted-foreground" : ""}`}
-          >
-            ${product.price}
-          </span>
-          {product.discount > 0 && (
-            <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">
+            <span className="absolute top-3 left-3 text-xs font-medium text-white bg-red-500 rounded-full px-2.5 py-1 shadow-sm">
               -{product.discount}%
             </span>
           )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <h3 className="font-semibold text-base truncate transition-colors duration-200 group-hover:text-primary">
+            {product.title}
+          </h3>
+
+          <StarRating rating={product.rating} />
+
+          <div className="flex items-center gap-2 mt-0.5">
+            {product.discount > 0 && (
+              <span className="text-lg font-bold tracking-tight">
+                $
+                {parseInt(
+                  (
+                    product.price -
+                    (product.price * product.discount) / 100
+                  ).toFixed(2)
+                )}
+              </span>
+            )}
+            <span
+              className={`font-bold text-lg tracking-tight ${
+                product.discount > 0
+                  ? "line-through text-muted-foreground text-sm font-medium"
+                  : ""
+              }`}
+            >
+              ${product.price}
+            </span>
+          </div>
         </div>
       </div>
     </Link>
   );
 }
+
 
 function NewArrival({ products: defaultProducts }: { products: Product[] }) {
   const products = defaultProducts.slice(0, 8);

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signupAction } from "@/action/auth.action";
 import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const signupSchema = z
   .object({
@@ -30,6 +31,7 @@ const signupSchema = z
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -51,15 +53,20 @@ export default function SignupForm() {
       password: data.password,
       confirmPassword: data.confirmPassword,
     };
-    const res=await signupAction(payload.name, payload.email, payload.password, payload.confirmPassword);
+    const res = await signupAction(
+      payload.name,
+      payload.email,
+      payload.password,
+      payload.confirmPassword,
+    );
     console.log(res);
-    if(!res.status){
-        toast.add({title:"Error",description:res.message,type:"error"})
-        
+    if (!res.status) {
+      toast.add({ title: "Error", description: res.message, type: "error" });
     }
-   if(res.status){
-    toast.add({title: "Account created successfully",type:"success"})
-   }
+    if (res.status) {
+      toast.add({ title: "Account created successfully", type: "success" });
+      router.push("/");
+    }
   }
 
   function handleGoogleSignup() {
@@ -141,7 +148,9 @@ export default function SignupForm() {
             }`}
           />
           {errors.email && (
-            <p className="text-xs text-red-600 mt-1.5">{errors.email.message}</p>
+            <p className="text-xs text-red-600 mt-1.5">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
