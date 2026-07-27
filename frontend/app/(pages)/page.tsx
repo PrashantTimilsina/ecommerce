@@ -1,14 +1,14 @@
 import { getAllProducts } from "@/api/product.api";
-import HappyCustomers from "./_components/Customers";
-import BrowseByDressStyle from "./_components/DressingStyle";
+import HappyCustomers from "../_components/Customers";
+import BrowseByDressStyle from "../_components/DressingStyle";
 
-import Hero from "./_components/Hero";
-import NewArrival from "./_components/NewArrival";
-
-
+import Hero from "../_components/Hero";
+import NewArrival from "../_components/NewArrival";
 
 
-import TopSelling from "./_components/TopSelling";
+
+
+import TopSelling from "../_components/TopSelling";
 import { Product } from "@/types/product";
 
 async function App() {
