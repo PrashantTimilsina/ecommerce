@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import ChangePasswordForm from "../(auth)/change-password/page";
+
 import UserCard from "./_components/UserCard";
+import ChangePasswordForm from "@/app/(auth)/change-password/page";
 
 const currentUser = {
   name: "Samantha D.",

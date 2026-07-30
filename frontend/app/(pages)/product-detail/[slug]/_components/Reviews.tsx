@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, Grid2x2, BadgeCheck } from "lucide-react";
+import { Star, BadgeCheck } from "lucide-react";
 
 import {
   Select,
@@ -11,9 +11,24 @@ import {
 } from "@/components/ui/select";
 
 import { Review } from "@/types/review";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {  FieldGroup } from "@/components/ui/field";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { postReviewAction } from "@/action/product.action";
+
 
 function StarRow({ rating }: { rating: number }) {
   return (
@@ -33,9 +48,6 @@ function StarRow({ rating }: { rating: number }) {
 }
 
 function ReviewCard({ review }: { review: Review }) {
-  async function handleAddReview(){
-   
-  }
   return (
     <div className="border border-border rounded-2xl p-5 flex flex-col gap-3 bg-background">
       <div className="flex items-start justify-between">
@@ -59,9 +71,34 @@ function ReviewCard({ review }: { review: Review }) {
 }
 
 function Reviews({ reviews }: { reviews: Review[] }) {
-  const [isClicked,setIsClicked] = useState(false);
-  const [review,setReview]=useState("");
-  
+  const [open, setOpen] = useState(false);
+
+  const formSchema = z.object({
+    rating: z
+      .string()
+      .min(1, "Please select a rating.")
+      .max(5, "Rating must be at most 5 characters."),
+    review: z
+      .string()
+      .min(6, "Review must be at least 6 characters.")
+      .max(100, "Review must be at most 100 characters."),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      rating: "",
+      review: "",
+    },
+  });
+
+  async function handleAddReview(data: z.infer<typeof formSchema>) {
+    console.log(data);
+    // await yourApiCall(data);
+    form.reset();
+    setOpen(false);
+  }
+
   return (
     <section className="w-full py-8 sm:py-10 md:py-12">
       <div className="container mx-auto px-4">
@@ -74,17 +111,93 @@ function Reviews({ reviews }: { reviews: Review[] }) {
             </span>
           </h2>
 
-          <div className="flex items-center gap-3  ">
-            {isClicked && (
-              <Input type="text" placeholder="Write a review..." value={review} onChange={(e) => setReview(e.target.value)} className="w-80 h-12"/>
-            )}
-            <button
-              type="button"
-              onClick={() => setIsClicked(isClicked => !isClicked)}
-              className="rounded-md cursor-pointer bg-black text-white py-2 px-6"
-            >
-             {isClicked ? "Submit" : "Write a Review"}
-            </button>
+          <div className="flex items-center gap-3">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger className="rounded-md cursor-pointer bg-black text-white py-2 px-6">
+                Write a Review
+              </DialogTrigger>
+
+              <DialogContent className="sm:max-w-106.25">
+                <DialogHeader>
+                  <DialogTitle className="text-lg font-bold">
+                    Write a Review
+                  </DialogTitle>
+                </DialogHeader>
+
+                <form
+                  id="form-rhf-demo"
+                  onSubmit={form.handleSubmit(
+                    handleAddReview,
+                    (errors) => {
+                      // fires when validation fails — useful while debugging
+                      console.log("Validation errors:", errors);
+                    }
+                  )}
+                  className="space-y-4"
+                >
+                  <Controller
+                    name="rating"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <div className="space-y-2">
+                        <Label>Rating</Label>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger
+                            className="w-full h-12!"
+                            aria-invalid={fieldState.invalid}
+                          >
+                            <SelectValue placeholder="Select a rating" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">1</SelectItem>
+                            <SelectItem value="2">2</SelectItem>
+                            <SelectItem value="3">3</SelectItem>
+                            <SelectItem value="4">4</SelectItem>
+                            <SelectItem value="5">5</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {fieldState.invalid && (
+                          <p className="text-sm text-red-500">
+                            {fieldState.error?.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  <Controller
+                    name="review"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <div className="space-y-2">
+                        <Label>Comment</Label>
+                        <Textarea
+                          {...field}
+                          placeholder="Write your review here..."
+                          className="h-20 resize-none"
+                          aria-invalid={fieldState.invalid}
+                        />
+                        {fieldState.invalid && (
+                          <p className="text-sm text-red-500">
+                            {fieldState.error?.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  <Button
+                    type="submit"
+                    className="bg-black text-white py-5 px-6 mt-4 w-full cursor-pointer"
+                  >
+                    Submit Review
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
