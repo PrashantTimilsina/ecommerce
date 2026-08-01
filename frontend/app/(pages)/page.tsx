@@ -11,9 +11,11 @@ import NewArrival from "../_components/NewArrival";
 import TopSelling from "../_components/TopSelling";
 import { Product } from "@/types/product";
 
+
 async function App() {
   const response=await getAllProducts();
   const products=response.data as Product[];
+
 
 
   return (

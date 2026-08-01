@@ -3,13 +3,15 @@
 import { postReview } from "@/api/review.api";
 
 export const postReviewAction = async ({
-  productId,
+  product,
   rating,
+  slug,
   comment,
 }: {
-  productId: string;
+  product: string;
   rating: number;
   comment: string;
+  slug: string;
 }) => {
-  return await postReview({ productId, rating, comment });
+  return await postReview({ product, rating, comment, slug });
 };

@@ -26,8 +26,10 @@ import z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {  FieldGroup } from "@/components/ui/field";
+
 import { useState } from "react";
+import { postReviewAction } from "@/action/product.action";
+import { toast } from "@/components/ui/toast";
 
 
 function StarRow({ rating }: { rating: number }) {
@@ -59,7 +61,7 @@ function ReviewCard({ review }: { review: Review }) {
         <BadgeCheck className="h-4 w-4 text-green-500 fill-green-500/20" />
       </div>
 
-      <p className="text-sm text-muted-foreground leading-relaxed">
+      <p className="text-sm font-medium leading-relaxed">
         &ldquo;{review.comment}&rdquo;
       </p>
 
@@ -70,7 +72,7 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
-function Reviews({ reviews }: { reviews: Review[] }) {
+function Reviews({ reviews, id,slug }: { reviews: Review[]; id: string; slug: string }) {
   const [open, setOpen] = useState(false);
 
   const formSchema = z.object({
@@ -93,10 +95,33 @@ function Reviews({ reviews }: { reviews: Review[] }) {
   });
 
   async function handleAddReview(data: z.infer<typeof formSchema>) {
-    console.log(data);
-    // await yourApiCall(data);
-    form.reset();
-    setOpen(false);
+
+  
+    const res = await postReviewAction({
+      product: id,
+      rating: parseInt(data.rating),
+      comment: data.review,
+      slug
+    });
+
+    console.log(res);
+    if(res.status!==true)return;
+    
+   
+    if (res.status) {
+      toast.add({
+        title: "Review added successfully",
+        type: "success",
+      });
+      form.reset();
+      setOpen(false);
+    } else {
+      toast.add({
+        title: res.message,
+
+        type: "error",
+      });
+    }
   }
 
   return (
@@ -126,13 +151,10 @@ function Reviews({ reviews }: { reviews: Review[] }) {
 
                 <form
                   id="form-rhf-demo"
-                  onSubmit={form.handleSubmit(
-                    handleAddReview,
-                    (errors) => {
-                      // fires when validation fails — useful while debugging
-                      console.log("Validation errors:", errors);
-                    }
-                  )}
+                  onSubmit={form.handleSubmit(handleAddReview, (errors) => {
+                    // fires when validation fails — useful while debugging
+                    console.log("Validation errors:", errors);
+                  })}
                   className="space-y-4"
                 >
                   <Controller

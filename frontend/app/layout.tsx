@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Roboto } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toast";
 
 
 const roboto = Roboto({
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
      
         {children}
+        <Toaster />
        
       </body>
     </html>

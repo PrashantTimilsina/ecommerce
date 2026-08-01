@@ -23,7 +23,7 @@ async function ProductDetail({ params }: Props) {
   return (
     <div>
       <ProductHero  product={product}/>
-      <Reviews reviews={reviews.data as Review[]} />
+      <Reviews reviews={reviews.data as Review[]} id={product._id} slug={product.slug}/>
       <FAQ />
       <YouMightAlsoLike products={products} />
     </div>

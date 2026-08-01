@@ -10,7 +10,7 @@ export const protect = async (req, res, next) => {
     if (!token) {
       return res
         .status(401)
-        .json({ success: false, message: "You are not logged in." });
+        .json({ status: false, message: "You are not logged in." });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -18,7 +18,7 @@ export const protect = async (req, res, next) => {
     if (!currentUser) {
       return res
         .status(401)
-        .json({ success: false, message: "User no longer exists." });
+        .json({ status: false, message: "User no longer exists." });
     }
 
     req.user = currentUser;
@@ -26,6 +26,6 @@ export const protect = async (req, res, next) => {
   } catch (err) {
     return res
       .status(401)
-      .json({ success: false, message: "Invalid or expired token." });
+      .json({ status: false, message: "Invalid or expired token." });
   }
 };
