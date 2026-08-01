@@ -1,6 +1,6 @@
 import END_POINTS from "@/constants/endpoints";
-import { myFetch } from "@/lib/api";
-import { Product } from "@/types/product";
+import { getToken, myFetch } from "@/lib/api";
+import { AddToCartPayload, Product } from "@/types/product";
 
 export const getAllProducts = async () => {
   const response = await myFetch<Product[]>(`${END_POINTS.PRODUCTS}`);
@@ -8,5 +8,17 @@ export const getAllProducts = async () => {
 };
 export const getProductBySlug = async (slug: string) => {
   const response = await myFetch<Product>(`${END_POINTS.PRODUCTS}${slug}`);
+  return response;
+};
+export const addToCart = async (payload: AddToCartPayload) => {
+  const token = await getToken();
+  const response = await myFetch(`${END_POINTS.CART}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
   return response;
 };

@@ -105,7 +105,7 @@ function Reviews({ reviews, id,slug }: { reviews: Review[]; id: string; slug: st
     });
 
     console.log(res);
-    if(res.status!==true)return;
+    
     
    
     if (res.status) {

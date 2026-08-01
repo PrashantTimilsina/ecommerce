@@ -15,3 +15,11 @@ export type Product = {
   updatedAt: string; // ISO date string
   slug: string;
 };
+export type AddToCartPayload = {
+  productId: string;
+  quantity: number;
+  size: string;
+  color: string;
+  image: string;
+  price: number;
+};

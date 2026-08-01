@@ -9,7 +9,7 @@ import { toast } from "@/components/ui/toast";
 
 const loginSchema = z.object({
   email: z
-    .string()
+    .string().trim()
     .min(1, "Email is required")
     .email("Enter a valid email address"),
   password: z
@@ -38,6 +38,8 @@ export default function LoginForm() {
   async function onSubmit(data: LoginFormValues) {
     console.log(data)
     const res=await loginAction(data.email, data.password);
+    console.log(res)
+
     if(!res.status){
         toast.add({title:"Error",description:res.message,type:"error"})
     }

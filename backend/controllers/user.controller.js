@@ -38,12 +38,12 @@ export const deleteUserProfile = catchAsync(async (req, res) => {
     .json({ status: true, message: "User deleted successfully" });
 });
 export const addToCart = catchAsync(async (req, res) => {
-  const { productId, quantity } = req.body;
+  const { productId, quantity, size, color, image, price } = req.body;
   const numberQuantity = Number(quantity);
-  if (!productId || !quantity) {
+  if (!productId || !quantity || !size || !color || !image || !price) {
     return res
       .status(400)
-      .json({ status: false, message: "Product ID and quantity are required" });
+      .json({ status: false, message: "All fields are required" });
   }
   const user = await User.findById(req.user.id);
   if (!user) {
@@ -67,7 +67,14 @@ export const addToCart = catchAsync(async (req, res) => {
   if (existingCartItem) {
     existingCartItem.quantity += numberQuantity;
   } else {
-    user.cartItems.push({ product: productId, quantity: numberQuantity });
+    user.cartItems.push({
+      product: productId,
+      quantity: numberQuantity,
+      size,
+      color,
+      image,
+      price,
+    });
   }
   await user.save();
   return res

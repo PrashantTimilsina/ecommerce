@@ -19,6 +19,7 @@ export const getReviewBySlug = catchAsync(async (req, res) => {
   }
   res.status(200).json({ status: true, data: review });
 });
+
 export const createReview = catchAsync(async (req, res) => {
   const { product, rating, comment } = req.body;
   const user = req.user.id;
@@ -28,10 +29,21 @@ export const createReview = catchAsync(async (req, res) => {
       .status(400)
       .json({ status: false, message: "All fields are required" });
   }
-  const review = await Review.create({ product, user, rating, comment });
-  res.status(201).json({
-    status: true,
-    message: "Review created successfully",
-    data: review,
-  });
+
+  try {
+    const review = await Review.create({ product, user, rating, comment });
+    return res.status(201).json({
+      status: true,
+      message: "Review created successfully",
+      data: review,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({
+        status: false,
+        message: "You've already reviewed this product",
+      });
+    }
+    throw err;
+  }
 });

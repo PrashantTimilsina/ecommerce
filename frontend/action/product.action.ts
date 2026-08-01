@@ -1,6 +1,8 @@
 "use server";
 
+import { addToCart } from "@/api/product.api";
 import { postReview } from "@/api/review.api";
+import { AddToCartPayload } from "@/types/product";
 
 export const postReviewAction = async ({
   product,
@@ -14,4 +16,7 @@ export const postReviewAction = async ({
   slug: string;
 }) => {
   return await postReview({ product, rating, comment, slug });
+};
+export const addToCartAction = async (payload: AddToCartPayload) => {
+  return await addToCart(payload);
 };
