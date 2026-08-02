@@ -52,4 +52,9 @@ router.delete(
   userController.deleteUserProfile,
 );
 router.post("/add-to-cart", authMiddleware.protect, userController.addToCart);
+router.post(
+  "/remove-from-cart",
+  authMiddleware.protect,
+  userController.removeFromCart,
+);
 export default router;

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Trash2, Minus, Plus } from "lucide-react";
+import { removeFromCartAction } from "@/action/product.action";
 
 export interface CartItemData {
-  id: number;
   name: string;
   image: string;
   size: string;
@@ -16,8 +16,8 @@ export interface CartItemData {
 
 interface CartItemProps {
   item: CartItemData;
-  onQuantityChange?: (id: number, quantity: number) => void;
-  onRemove?: (id: number) => void;
+  onQuantityChange?: (name: string, quantity: number) => void;
+  onRemove?: (name: string) => void;
 }
 
 function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
@@ -26,8 +26,18 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
   const updateQuantity = (next: number) => {
     const clamped = Math.max(1, next);
     setQuantity(clamped);
-    onQuantityChange?.(item.id, clamped);
+    onQuantityChange?.(item.name, clamped);
   };
+  async function handleRemove() {
+    const response = await removeFromCartAction({
+      product: item.name,
+      size: item.size,
+      color: item.color,
+    });
+    if (response.status) {
+      onRemove?.(item.name);
+    }
+  }
 
   return (
     <div className="flex items-center gap-4 border border-border rounded-2xl p-4">
@@ -44,14 +54,20 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
             <p className="text-xs sm:text-sm text-muted-foreground">
               Size: <span className="text-foreground">{item.size}</span>
             </p>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Color: <span className="text-foreground">{item.color}</span>
+            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+              Color:
+              <span
+                className="inline-block h-4 w-4 rounded-full border border-border"
+                style={{ backgroundColor: item.color }}
+                aria-label={item.color}
+                title={item.color}
+              />
             </p>
           </div>
 
           <button
             type="button"
-            onClick={() => onRemove?.(item.id)}
+            onClick={handleRemove}
             aria-label={`Remove ${item.name}`}
             className="text-red-500 hover:text-red-600 cursor-pointer shrink-0"
           >

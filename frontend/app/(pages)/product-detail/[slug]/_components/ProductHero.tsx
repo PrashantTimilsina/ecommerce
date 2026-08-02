@@ -48,13 +48,11 @@
 //     console.log(response);
 //     console.log(payload)
 
-   
 //   }
 
 //   return (
 //     <div className="w-full">
 //       <div className="container mx-auto px-4 py-8">
-        
 
 //         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 //           {/* Left: Gallery */}
@@ -268,33 +266,36 @@ function ProductHero({ product }: { product: Product }) {
   const finalPrice =
     product.discount > 0
       ? parseInt(
-          (
-            product.price -
-            (product.price * product.discount) / 100
-          ).toFixed(2)
+          (product.price - (product.price * product.discount) / 100).toFixed(2),
         )
       : product.price;
 
-  async function handleAddToCart(){
-    if(!selectedColor || !selectedSize){
-      toast.add({ title: "Please select color and size" ,type:"error"});
+  async function handleAddToCart() {
+    if (!selectedColor || !selectedSize) {
+      toast.add({ title: "Please select color and size", type: "error" });
       return;
     }
-    const payload={productId:product._id,image:product.images[selectedImage],color:selectedColor,size:selectedSize,quantity,price:finalPrice};
-    const response=await addToCartAction(payload);
-    if(response.status){
-      toast.add({ title: "Product added to cart successfully" ,type:"success"});
-    }
-    
+    const payload = {
+      product: product.title,
+      image: product.images[selectedImage],
+      color: selectedColor,
+      size: selectedSize,
+      quantity,
+      price: finalPrice,
+    };
+    const response = await addToCartAction(payload);
 
-   
+    if (response.status) {
+      toast.add({
+        title: "Product added to cart successfully",
+        type: "success",
+      });
+    }
   }
 
   return (
     <div className="w-full">
       <div className="container mx-auto px-4 py-8">
-        
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left: Gallery */}
           <div className="flex flex-col-reverse sm:flex-row gap-4">
@@ -386,7 +387,9 @@ function ProductHero({ product }: { product: Product }) {
                     onClick={() => setSelectedColor(color)}
                     aria-label={color}
                     className={`h-8 w-8 cursor-pointer rounded-full flex items-center justify-center ring-offset-2 transition-all ${
-                      selectedColor === color ? "ring-2 ring-foreground" : "ring-0"
+                      selectedColor === color
+                        ? "ring-2 ring-foreground"
+                        : "ring-0"
                     }`}
                     style={{ backgroundColor: color }}
                   />

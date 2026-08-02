@@ -1,6 +1,10 @@
 "use server";
 
-import { addToCart } from "@/api/product.api";
+import {
+  addToCart,
+  removeFromCart,
+  RemoveFromCartPayload,
+} from "@/api/product.api";
 import { postReview } from "@/api/review.api";
 import { AddToCartPayload } from "@/types/product";
 
@@ -19,4 +23,7 @@ export const postReviewAction = async ({
 };
 export const addToCartAction = async (payload: AddToCartPayload) => {
   return await addToCart(payload);
+};
+export const removeFromCartAction = async (payload: RemoveFromCartPayload) => {
+  return await removeFromCart(payload);
 };

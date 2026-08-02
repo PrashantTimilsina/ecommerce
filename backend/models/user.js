@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import validator from "validator";
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -12,6 +13,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
       trim: true,
+      validate: {
+        validator: function (value) {
+          return validator.isEmail(value);
+        },
+        message: (props) => `${props.value} is not a valid email address`,
+      },
     },
     password: {
       type: String,
@@ -33,7 +40,7 @@ const userSchema = new mongoose.Schema(
     cartItems: [
       {
         _id: false,
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        product: { type: String, required: true },
         quantity: { type: Number, default: 1, min: 1 },
         size: { type: String, required: true },
         color: { type: String, required: true },

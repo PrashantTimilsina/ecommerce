@@ -16,7 +16,7 @@ export type Product = {
   slug: string;
 };
 export type AddToCartPayload = {
-  productId: string;
+  product: string;
   quantity: number;
   size: string;
   color: string;

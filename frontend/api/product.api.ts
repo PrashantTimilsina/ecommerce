@@ -22,3 +22,20 @@ export const addToCart = async (payload: AddToCartPayload) => {
   });
   return response;
 };
+export type RemoveFromCartPayload = {
+  product: string;
+  size: string;
+  color: string;
+};
+export const removeFromCart = async (payload: RemoveFromCartPayload) => {
+  const token = await getToken();
+  const response = await myFetch(`${END_POINTS.REMOVE_FROM_CART}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return response;
+};
