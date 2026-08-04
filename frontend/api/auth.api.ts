@@ -1,8 +1,15 @@
 import END_POINTS from "@/constants/endpoints";
 import { myFetch } from "@/lib/api";
+type LoginResponse = {
+  token: string;
+  user: {
+    _id: string;
 
+    role: string;
+  };
+};
 export const login = async (email: string, password: string) => {
-  const response = await myFetch<{ token: string }>(`${END_POINTS.LOGIN}`, {
+  const response = await myFetch<LoginResponse>(`${END_POINTS.LOGIN}`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -17,7 +24,7 @@ export const signup = async (
   password: string,
   confirmPassword: string,
 ) => {
-  const response = await myFetch<{ token: string }>(`${END_POINTS.SIGNUP}`, {
+  const response = await myFetch<LoginResponse>(`${END_POINTS.SIGNUP}`, {
     headers: {
       "Content-Type": "application/json",
     },

@@ -2,6 +2,7 @@
 
 import HeroPicture from "@/assets/Hero.png";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import CountUp from "react-countup";
 
 const stats = [
@@ -35,9 +36,11 @@ function Hero() {
             style.
           </p>
 
-          <Button className="cursor-pointer w-40 sm:w-48 py-5 sm:py-6 rounded-full text-sm sm:text-base">
-            Shop Now
-          </Button>
+          <Link href="/filter">
+            <Button className="cursor-pointer w-40 sm:w-48 py-5 sm:py-6 rounded-full text-sm sm:text-base">
+              Shop Now
+            </Button>
+          </Link>
 
           {/* Stats with count-up animation */}
           <div className="flex flex-wrap justify-center md:justify-start gap-6 sm:gap-8 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border w-full">

@@ -108,12 +108,12 @@ function NewArrival({ products: defaultProducts }: { products: Product[] }) {
         </div>
 
         <div className="flex justify-center mt-10">
-          <Button
+          <Link href="/filter"><Button
             variant="outline"
             className="rounded-full px-10 py-5 cursor-pointer"
           >
             Show All
-          </Button>
+          </Button></Link>
         </div>
 
         <hr className="mt-10 border-border" />

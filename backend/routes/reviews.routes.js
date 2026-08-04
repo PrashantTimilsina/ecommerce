@@ -5,4 +5,6 @@ const router = express.Router();
 router.get("/", reviewController.getAllReviews);
 router.get("/:productId", reviewController.getReviewBySlug);
 router.post("/", authMiddleware.protect, reviewController.createReview);
+router.patch("/:id", authMiddleware.protect, reviewController.updateReview);
+router.delete("/:id", authMiddleware.protect, reviewController.deleteReview);
 export default router;

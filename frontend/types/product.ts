@@ -23,3 +23,19 @@ export type AddToCartPayload = {
   image: string;
   price: number;
 };
+export interface FilterState {
+  categories: string[];
+  colors: string[];
+  sizes: string[];
+  maxPrice: number;
+}
+
+export function getDefaultFilters(products: Product[]): FilterState {
+  const highest = products.reduce((max, p) => Math.max(max, p.price), 0);
+  return {
+    categories: [],
+    colors: [],
+    sizes: [],
+    maxPrice: highest > 0 ? highest : 500,
+  };
+}
