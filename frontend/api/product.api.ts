@@ -1,9 +1,26 @@
 import END_POINTS from "@/constants/endpoints";
 import { getToken, myFetch } from "@/lib/api";
 import { AddToCartPayload, Product } from "@/types/product";
+type Params = {
+  category?: string;
+  sizes?: string;
+  colors?: string;
+};
+export const getAllProducts = async (params: Params) => {
+  const query = new URLSearchParams();
+  if (params?.category) {
+    query.append("category", params.category);
+  }
+  if (params?.sizes) {
+    query.append("sizes", params.sizes);
+  }
+  if (params?.colors) {
+    query.append("colors", params.colors);
+  }
 
-export const getAllProducts = async () => {
-  const response = await myFetch<Product[]>(`${END_POINTS.PRODUCTS}`);
+  const response = await myFetch<Product[]>(
+    `${END_POINTS.PRODUCTS}?${query.toString()}`,
+  );
   return response;
 };
 export const getProductBySlug = async (slug: string) => {

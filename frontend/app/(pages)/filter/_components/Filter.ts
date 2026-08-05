@@ -11,21 +11,3 @@ export interface Product {
   colors: string[]; // hex values, e.g. ["#000000", "#FFFFFF"]
   sizes: string[]; // e.g. ["S", "M", "L", "XL"]
 }
-
-export interface FilterState {
-  categories: string[];
-  styles: string[];
-  colors: string[];
-  sizes: string[];
-  minPrice: number;
-  maxPrice: number;
-}
-
-export const DEFAULT_FILTERS: FilterState = {
-  categories: [],
-  styles: [],
-  colors: [],
-  sizes: [],
-  minPrice: 0,
-  maxPrice: 500,
-};

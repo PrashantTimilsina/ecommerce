@@ -8,7 +8,8 @@ import {
   resolveSwatchColor,
   isLightColor,
 } from "./FilterOptions";
-import { MOCK_PRODUCTS } from "./MockProduct";
+
+import { Product } from "@/types/product";
 
 function Section({
   title,
@@ -33,8 +34,9 @@ function Section({
   );
 }
 
-export function Filters() {
-  const options = getFilterOptions(MOCK_PRODUCTS);
+export function Filters({ product }: { product: Product[] }) {
+  const options = getFilterOptions(product);
+
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -45,7 +47,7 @@ export function Filters() {
     for (const [key, value] of formData.entries()) {
       params.append(key, value.toString());
     }
-    router.push(`/filter?${params.toString()}`, { scroll: false });
+    router.push(`/filter?${params.toString()}`);
   };
 
   const handleClear = () => {
@@ -61,7 +63,7 @@ export function Filters() {
           <button
             type="button"
             onClick={handleClear}
-            className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
+            className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground cursor-pointer"
           >
             Clear all
           </button>
@@ -97,7 +99,7 @@ export function Filters() {
               >
                 <input
                   type="radio"
-                  name="color"
+                  name="colors"
                   value={color}
                   className="peer sr-only"
                 />
@@ -123,7 +125,7 @@ export function Filters() {
               <label key={size} className="cursor-pointer rounded-full">
                 <input
                   type="radio"
-                  name="size"
+                  name="sizes"
                   value={size}
                   className="peer sr-only"
                 />
@@ -137,7 +139,7 @@ export function Filters() {
 
         <button
           type="submit"
-          className="mt-5 w-full rounded-full bg-black py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          className="mt-5 w-full rounded-full bg-black py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 cursor-pointer"
         >
           Apply Filter
         </button>

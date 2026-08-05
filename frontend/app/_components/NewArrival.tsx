@@ -30,11 +30,12 @@ function StarRating({ rating }: { rating: number }) {
           );
         })}
       </div>
-      <span className="text-sm text-muted-foreground ml-1">{rating}/5</span>
+      <span className="text-sm text-muted-foreground ml-1">
+        {JSON.parse(rating.toFixed(2))}/5
+      </span>
     </div>
   );
 }
-
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -70,7 +71,7 @@ export function ProductCard({ product }: { product: Product }) {
                   (
                     product.price -
                     (product.price * product.discount) / 100
-                  ).toFixed(2)
+                  ).toFixed(2),
                 )}
               </span>
             )}
@@ -90,7 +91,6 @@ export function ProductCard({ product }: { product: Product }) {
   );
 }
 
-
 function NewArrival({ products: defaultProducts }: { products: Product[] }) {
   const products = defaultProducts.slice(0, 8);
 
@@ -108,12 +108,14 @@ function NewArrival({ products: defaultProducts }: { products: Product[] }) {
         </div>
 
         <div className="flex justify-center mt-10">
-          <Link href="/filter"><Button
-            variant="outline"
-            className="rounded-full px-10 py-5 cursor-pointer"
-          >
-            Show All
-          </Button></Link>
+          <Link href="/filter">
+            <Button
+              variant="outline"
+              className="rounded-full px-10 py-5 cursor-pointer"
+            >
+              Show All
+            </Button>
+          </Link>
         </div>
 
         <hr className="mt-10 border-border" />
