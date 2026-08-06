@@ -5,12 +5,17 @@ import { Product } from "@/types/product";
 import { MoveLeft } from "lucide-react";
 import Link from "next/link";
 type Props = {
-  searchParams: Promise<{ category?: string; sizes: string; colors: string }>;
+  searchParams: Promise<{
+    category?: string;
+    sizes: string;
+    colors: string;
+    search?: string;
+  }>;
 };
 export default async function ProductsPage({ searchParams }: Props) {
-  const { category, sizes, colors } = await searchParams;
+  const { category, sizes, colors, search } = await searchParams;
 
-  const response = await getAllProducts({ category, sizes, colors });
+  const response = await getAllProducts({ category, sizes, colors, search });
 
   const products = response.data as Product[];
   if (!products || products.length === 0) {

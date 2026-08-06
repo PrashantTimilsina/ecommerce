@@ -11,15 +11,30 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useDebounce } from "@/hooks/useDebounce";
 import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const navLinks = ["Dummy", "Dummy", "Dummy"];
 
 function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const router = useRouter();
+  const debouncedSearch = useDebounce(search, 500);
+  useEffect(() => {
+    const query = new URLSearchParams();
+    if (debouncedSearch.trim() !== "") {
+      query.append("search", debouncedSearch);
+      router.replace(`/filter?${query.toString()}`);
+    } else {
+      query.delete("search");
+      router.replace("/filter");
+    }
+  }, [debouncedSearch]);
 
   return (
     <div className="bg-[#F0F0F0] p-4 sticky top-0 z-50">
@@ -44,6 +59,8 @@ function Navbar() {
               type="text"
               placeholder="Search for products..."
               className="bg-[#FFFFFF] pl-10 w-72 xl:w-96 h-10 rounded-full border-gray-300 focus-visible:ring-0"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </ul>

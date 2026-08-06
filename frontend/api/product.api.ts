@@ -5,6 +5,7 @@ type Params = {
   category?: string;
   sizes?: string;
   colors?: string;
+  search?: string;
 };
 export const getAllProducts = async (params: Params) => {
   const query = new URLSearchParams();
@@ -16,6 +17,9 @@ export const getAllProducts = async (params: Params) => {
   }
   if (params?.colors) {
     query.append("colors", params.colors);
+  }
+  if (params?.search) {
+    query.append("search", params.search);
   }
 
   const response = await myFetch<Product[]>(

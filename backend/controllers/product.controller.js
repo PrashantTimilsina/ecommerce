@@ -5,7 +5,7 @@ import { catchAsync } from "../utils/catchAsync.js";
 export const getAllProducts = catchAsync(async (req, res) => {
   const features = new ApiFeatures(Product.find(), req.query)
     .filter()
-    .search(["title", "category", "sizes", "colors"])
+    .search(["title", "category"])
     .select()
     .sort()
     .paginate();
