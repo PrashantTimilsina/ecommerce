@@ -2,7 +2,6 @@
 
 import Logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
-
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
@@ -25,23 +24,35 @@ function Navbar() {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const debouncedSearch = useDebounce(search, 500);
-  const isFirstRender = useRef(true);
+
+  // Tracks whether the search box has ever held real (non-whitespace) content.
+  // Only once this is true do we treat clearing the box as "the user cleared
+  // a real search" and redirect to a bare /filter. Typing just a space never
+  // flips this, so a stray spacebar press does nothing.
+  const hadRealContent = useRef(false);
 
   useEffect(() => {
-    // Skip on mount — only navigate in response to the user actually typing.
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    const trimmed = debouncedSearch.trim();
+
+    if (trimmed !== "") {
+      hadRealContent.current = true;
+      const query = new URLSearchParams();
+      query.append("search", trimmed);
+      router.replace(`/filter?${query.toString()}`);
       return;
     }
 
-    const query = new URLSearchParams();
-    if (debouncedSearch.trim() !== "") {
-      query.append("search", debouncedSearch);
-      router.replace(`/filter?${query.toString()}`);
-    } else {
+    // trimmed is empty here — only redirect to bare /filter if the box
+    // previously had real content (i.e. this is an actual "clear", not
+    // someone just tapping spacebar with nothing else typed).
+    if (hadRealContent.current) {
       router.replace("/filter");
     }
   }, [debouncedSearch]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
 
   return (
     <div className="bg-[#F0F0F0] p-4 sticky top-0 z-50">
@@ -67,7 +78,7 @@ function Navbar() {
               placeholder="Search for products..."
               className="bg-[#FFFFFF] pl-10 w-72 xl:w-96 h-10 rounded-full border-gray-300 focus-visible:ring-0"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={handleSearchChange}
             />
           </div>
         </ul>
@@ -113,6 +124,8 @@ function Navbar() {
                     type="text"
                     placeholder="Search for products..."
                     className="bg-[#FFFFFF] pl-10 w-full h-10 rounded-full border-gray-300 focus-visible:ring-0"
+                    value={search}
+                    onChange={handleSearchChange}
                   />
                 </div>
                 <ul className="flex flex-col gap-4 text-black text-base">
@@ -137,6 +150,8 @@ function Navbar() {
               type="text"
               placeholder="Search for products..."
               className="bg-[#FFFFFF] pl-10 w-full h-10 rounded-full border-gray-300 focus-visible:ring-0"
+              value={search}
+              onChange={handleSearchChange}
               autoFocus
             />
           </div>

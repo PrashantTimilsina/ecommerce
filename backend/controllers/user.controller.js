@@ -30,11 +30,24 @@ export const updateUserProfile = catchAsync(async (req, res) => {
     .json({ status: true, message: "Profile updated successfully", user });
 });
 export const deleteUserProfile = catchAsync(async (req, res) => {
+  const { deleteConfirm } = req.body;
+  if (!deleteConfirm) {
+    return res.status(400).json({
+      status: false,
+      message: "Please provide deleteConfirm field",
+    });
+  }
+  if (deleteConfirm !== "delete") {
+    return res.status(400).json({
+      status: false,
+      message: "Delete text does not match, please type 'delete' to confirm",
+    });
+  }
   const user = await User.findByIdAndDelete(req.user.id);
   if (!user) {
     return res.status(404).json({ status: false, message: "User not found" });
   }
-  // res.clearCookie("token", cookieOptions);
+
   return res
     .status(200)
     .json({ status: true, message: "User deleted successfully" });

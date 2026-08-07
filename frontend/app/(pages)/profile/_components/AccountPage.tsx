@@ -11,11 +11,24 @@ import {
   Check,
   X,
   Mail,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 
 import ChangePasswordForm from "@/app/(auth)/change-password/page";
 import { updateUserProfileAction } from "@/action/user.action";
 import { toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { deleteAccountAction, logoutAction } from "@/action/auth.action";
 
 export type User = {
   name: string;
@@ -36,6 +49,9 @@ function AccountPage({ user }: { user: User }) {
   );
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isSavingName, setIsSavingName] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,15 +62,6 @@ function AccountPage({ user }: { user: User }) {
     const localPreview = URL.createObjectURL(file);
     setAvatarPreview(localPreview);
     setIsUploadingAvatar(true);
-
-    const payload = { avatarFile: file }; // send as FormData to your API
-    console.log("Uploading avatar:", payload);
-    // TODO: call your API here, e.g.
-    // const formData = new FormData();
-    // formData.append("avatar", file);
-    // const res = await fetch("/api/account/avatar", { method: "PATCH", body: formData });
-    // const { avatarUrl } = await res.json();
-    // setAvatarPreview(avatarUrl);
 
     await new Promise((res) => setTimeout(res, 600));
     setIsUploadingAvatar(false);
@@ -75,14 +82,8 @@ function AccountPage({ user }: { user: User }) {
     }
 
     setIsSavingName(true);
-    const payload = { name: trimmed };
-    console.log("Updating name:", payload);
-    // TODO: call your API here, e.g.
-    // await fetch("/api/account", {
-    //   method: "PATCH",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(payload),
-    // });
+    console.log("Updating name:", { name: trimmed });
+
     const response = await updateUserProfileAction(trimmed);
     if (response.status) {
       toast.add({ title: "Name updated successfully", type: "success" });
@@ -102,6 +103,31 @@ function AccountPage({ user }: { user: User }) {
     if (e.key === "Enter") confirmNameEdit();
     if (e.key === "Escape") cancelNameEdit();
   };
+
+  const handleDeleteDialogChange = (open: boolean) => {
+    if (isDeleting) return; // don't let it close mid-request
+    setShowDeleteConfirm(open);
+    if (!open) setDeleteConfirmText("");
+  };
+  async function handleLogout() {
+    return await logoutAction();
+  }
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+
+    const response = await deleteAccountAction(deleteConfirmText);
+    if (response.status) {
+      toast.add({ title: "Account deleted", type: "success" });
+    }
+
+    await new Promise((res) => setTimeout(res, 700));
+    setIsDeleting(false);
+    setShowDeleteConfirm(false);
+    setDeleteConfirmText("");
+  };
+
+  const isDeleteConfirmed = deleteConfirmText.trim().toLowerCase() === "delete";
 
   if (showPasswordForm) {
     return (
@@ -231,14 +257,83 @@ function AccountPage({ user }: { user: User }) {
           </button>
           <button
             type="button"
-            onClick={() => console.log("Logging out")}
+            onClick={handleLogout}
             className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
             Log out
           </button>
+
+          <div className="my-1 border-t border-neutral-100" />
+
+          <button
+            type="button"
+            onClick={() => setShowDeleteConfirm(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-neutral-400 transition hover:bg-red-50 hover:text-red-600 cursor-pointer"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete account
+          </button>
         </div>
       </div>
+
+      {/* Delete confirmation dialog (shadcn) */}
+      <Dialog open={showDeleteConfirm} onOpenChange={handleDeleteDialogChange}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+            </div>
+            <DialogTitle className="mt-4">Delete your account?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete your account and all associated data.
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <label
+              htmlFor="delete-confirm-input"
+              className="block text-sm font-medium text-neutral-700"
+            >
+              Type{" "}
+              <span className="font-semibold text-neutral-900">delete</span> to
+              confirm
+            </label>
+            <Input
+              id="delete-confirm-input"
+              type="text"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              disabled={isDeleting}
+              autoFocus
+              placeholder="delete"
+              className="mt-1.5"
+            />
+          </div>
+
+          <DialogFooter className="mt-4 gap-2.5 sm:gap-2.5">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleDeleteDialogChange(false)}
+              disabled={isDeleting}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleDeleteAccount}
+              disabled={!isDeleteConfirmed || isDeleting}
+              className="flex-1 bg-red-600 text-white hover:bg-red-700"
+            >
+              {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
+              Delete account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

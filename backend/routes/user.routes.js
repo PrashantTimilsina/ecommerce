@@ -38,10 +38,11 @@ router.post(
   authMiddleware.protect,
   authController.changePassword,
 );
-router.post("/logout", authMiddleware.protect, authController.logout);
+
 router.get("/me", authMiddleware.protect, userController.getCurrentUser);
 
 router.patch("/me", authMiddleware.protect, userController.updateUserProfile);
+
 router.delete("/me", authMiddleware.protect, userController.deleteUserProfile);
 router.post("/add-to-cart", authMiddleware.protect, userController.addToCart);
 router.post(

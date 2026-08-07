@@ -33,3 +33,13 @@ export const signup = async (
   });
   return response;
 };
+export const deleteAccount = async (deleteConfirm: string) => {
+  const response = await myFetch(`${END_POINTS.ME}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ deleteConfirm }),
+    method: "DELETE",
+  });
+  return response;
+};

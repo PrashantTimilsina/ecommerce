@@ -1,7 +1,8 @@
 "use server";
 
-import { login, signup } from "@/api/auth.api";
+import { deleteAccount, login, signup } from "@/api/auth.api";
 import { deleteReview, updateReview } from "@/api/review.api";
+
 import { cookies } from "next/headers";
 
 export const loginAction = async (email: string, password: string) => {
@@ -69,4 +70,21 @@ export const updateReviewAction = async ({
 };
 export const deleteReviewAction = async (id: string, slug: string) => {
   return await deleteReview(id, slug);
+};
+export const logoutAction = async () => {
+  const cookieStore = await cookies();
+
+  cookieStore.delete("token");
+  cookieStore.delete("user");
+
+  return {
+    status: true,
+    message: "Logged out successfully",
+  };
+};
+export const deleteAccountAction = async (deleteConfirm: string) => {
+  const cookieStore = await cookies();
+  cookieStore.delete("token");
+  cookieStore.delete("user");
+  return await deleteAccount(deleteConfirm);
 };

@@ -166,7 +166,3 @@ export const resetPassword = catchAsync(async (req, res) => {
   await user.save();
   return res.json({ status: true, message: "Password reset successful!" });
 });
-export const logout = catchAsync(async (req, res) => {
-  res.clearCookie("token", cookieOptions);
-  return res.status(200).json({ status: true, message: "Logout successful" });
-});
