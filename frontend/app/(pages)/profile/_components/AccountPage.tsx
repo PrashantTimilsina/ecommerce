@@ -105,7 +105,7 @@ function AccountPage({ user }: { user: User }) {
   };
 
   const handleDeleteDialogChange = (open: boolean) => {
-    if (isDeleting) return; // don't let it close mid-request
+    if (isDeleting) return;
     setShowDeleteConfirm(open);
     if (!open) setDeleteConfirmText("");
   };
@@ -117,6 +117,10 @@ function AccountPage({ user }: { user: User }) {
     setIsDeleting(true);
 
     const response = await deleteAccountAction(deleteConfirmText);
+
+    if (response.errors) {
+      toast.add({ title: response.message, type: "error" });
+    }
     if (response.status) {
       toast.add({ title: "Account deleted", type: "success" });
     }
@@ -326,7 +330,7 @@ function AccountPage({ user }: { user: User }) {
               type="button"
               onClick={handleDeleteAccount}
               disabled={!isDeleteConfirmed || isDeleting}
-              className="flex-1 bg-red-600 text-white hover:bg-red-700"
+              className="flex-1 bg-red-600 text-white hover:bg-red-700 cursor-pointer"
             >
               {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
               Delete account

@@ -84,7 +84,11 @@ export const logoutAction = async () => {
 };
 export const deleteAccountAction = async (deleteConfirm: string) => {
   const cookieStore = await cookies();
-  cookieStore.delete("token");
-  cookieStore.delete("user");
-  return await deleteAccount(deleteConfirm);
+
+  const response = await deleteAccount(deleteConfirm);
+  if (response.status) {
+    cookieStore.delete("token");
+    cookieStore.delete("user");
+  }
+  return response;
 };

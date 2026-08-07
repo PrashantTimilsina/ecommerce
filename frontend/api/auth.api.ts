@@ -1,5 +1,5 @@
 import END_POINTS from "@/constants/endpoints";
-import { myFetch } from "@/lib/api";
+import { getToken, myFetch } from "@/lib/api";
 type LoginResponse = {
   token: string;
   user: {
@@ -34,12 +34,15 @@ export const signup = async (
   return response;
 };
 export const deleteAccount = async (deleteConfirm: string) => {
+  const token = await getToken();
   const response = await myFetch(`${END_POINTS.ME}`, {
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ deleteConfirm }),
     method: "DELETE",
   });
+  console.log(response);
   return response;
 };
