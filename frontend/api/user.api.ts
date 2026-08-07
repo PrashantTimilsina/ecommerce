@@ -12,6 +12,9 @@ export type ApiCartItem = {
 
 export type GetUserData = {
   user: {
+    name: string;
+    email: string;
+    role: string;
     cartItems: ApiCartItem[];
   };
 };
@@ -23,5 +26,16 @@ export const getUser = async () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+  });
+};
+export const updateUserProfile = async (name: string) => {
+  const token = await getToken();
+  return await myFetch(`${END_POINTS.ME}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    method: "PATCH",
+    body: JSON.stringify({ name }),
   });
 };

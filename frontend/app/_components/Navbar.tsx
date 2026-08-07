@@ -16,7 +16,7 @@ import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const navLinks = ["Dummy", "Dummy", "Dummy"];
 
@@ -25,13 +25,20 @@ function Navbar() {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const debouncedSearch = useDebounce(search, 500);
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
+    // Skip on mount — only navigate in response to the user actually typing.
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     const query = new URLSearchParams();
     if (debouncedSearch.trim() !== "") {
       query.append("search", debouncedSearch);
       router.replace(`/filter?${query.toString()}`);
     } else {
-      query.delete("search");
       router.replace("/filter");
     }
   }, [debouncedSearch]);

@@ -3,16 +3,10 @@
 import Image from "next/image";
 import { LogOut, Mail, Phone, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-export interface UserProfile {
-  name: string;
-  email: string;
-  phone: string;
-  avatar?: string;
-}
+import { User } from "./AccountPage";
 
 interface UserCardProps {
-  user: UserProfile;
+  user: User;
   onLogout?: () => void;
   onChangePassword?: () => void;
 }
@@ -22,13 +16,9 @@ function UserCard({ user, onLogout, onChangePassword }: UserCardProps) {
     <div className="w-full max-w-md mx-auto border border-border rounded-2xl p-6 flex flex-col items-center gap-4 text-center">
       {/* Avatar */}
       <div className="relative h-24 w-24 rounded-full overflow-hidden bg-muted">
-        {user.avatar ? (
-          <Image
-            src={user.avatar}
-            alt={user.name}
-            fill
-            className="object-cover"
-          />
+        {/*avatar rakhne thau*/}
+        {user.role ? (
+          <Image src={""} alt={user.name} fill className="object-cover" />
         ) : (
           <div className="flex items-center justify-center h-full w-full font-bold text-2xl text-muted-foreground">
             {user.name.charAt(0)}
@@ -49,7 +39,7 @@ function UserCard({ user, onLogout, onChangePassword }: UserCardProps) {
         </div>
         <div className="flex items-center gap-3 text-sm">
           <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="text-muted-foreground">{user.phone}</span>
+          <span className="text-muted-foreground">{user.role}</span>
         </div>
       </div>
 

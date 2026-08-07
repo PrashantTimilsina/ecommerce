@@ -41,16 +41,8 @@ router.post(
 router.post("/logout", authMiddleware.protect, authController.logout);
 router.get("/me", authMiddleware.protect, userController.getCurrentUser);
 
-router.patch(
-  "/update-me",
-  authMiddleware.protect,
-  userController.updateUserProfile,
-);
-router.delete(
-  "/delete-me",
-  authMiddleware.protect,
-  userController.deleteUserProfile,
-);
+router.patch("/me", authMiddleware.protect, userController.updateUserProfile);
+router.delete("/me", authMiddleware.protect, userController.deleteUserProfile);
 router.post("/add-to-cart", authMiddleware.protect, userController.addToCart);
 router.post(
   "/remove-from-cart",
