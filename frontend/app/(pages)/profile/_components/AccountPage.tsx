@@ -15,7 +15,6 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-import ChangePasswordForm from "@/app/(auth)/change-password/page";
 import { updateUserProfileAction } from "@/action/user.action";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -29,6 +28,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { deleteAccountAction, logoutAction } from "@/action/auth.action";
+import ChangePasswordForm from "@/app/(auth)/_components/ChangePassword";
 
 export type User = {
   name: string;

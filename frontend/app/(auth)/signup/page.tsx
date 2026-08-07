@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -32,6 +33,8 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupForm() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -79,7 +82,7 @@ export default function SignupForm() {
         Create an account
       </h1>
       <p className="text-sm text-gray-500 text-center mb-6">
-        Sign up to start shopping
+        Sign up to get started with Shop.co
       </p>
 
       <button
@@ -114,7 +117,7 @@ export default function SignupForm() {
           <input
             id="username"
             type="text"
-            placeholder="prashant"
+            placeholder="username"
             {...register("username")}
             className={`w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
               errors.username
@@ -139,7 +142,7 @@ export default function SignupForm() {
           <input
             id="email"
             type="email"
-            placeholder="prashant@gmail.com"
+            placeholder="example@gmail.com"
             {...register("email")}
             className={`w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
               errors.email
@@ -161,17 +164,28 @@ export default function SignupForm() {
           >
             Password
           </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Create a password"
-            {...register("password")}
-            className={`w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
-              errors.password
-                ? "border-red-400 focus:ring-red-100"
-                : "border-gray-300 focus:border-gray-400 focus:ring-gray-100"
-            }`}
-          />
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Create a password"
+              {...register("password")}
+              className={`w-full rounded-lg border px-3 pr-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
+                errors.password
+                  ? "border-red-400 focus:ring-red-100"
+                  : "border-gray-300 focus:border-gray-400 focus:ring-gray-100"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 cursor-pointer top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-xs text-red-600 mt-1.5">
               {errors.password.message}
@@ -186,17 +200,30 @@ export default function SignupForm() {
           >
             Confirm Password
           </label>
-          <input
-            id="confirmPassword"
-            type="password"
-            placeholder="Re-enter your password"
-            {...register("confirmPassword")}
-            className={`w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
-              errors.confirmPassword
-                ? "border-red-400 focus:ring-red-100"
-                : "border-gray-300 focus:border-gray-400 focus:ring-gray-100"
-            }`}
-          />
+          <div className="relative">
+            <input
+              id="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Re-enter your password"
+              {...register("confirmPassword")}
+              className={`w-full rounded-lg border px-3 pr-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
+                errors.confirmPassword
+                  ? "border-red-400 focus:ring-red-100"
+                  : "border-gray-300 focus:border-gray-400 focus:ring-gray-100"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="absolute right-3 cursor-pointer top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label={
+                showConfirmPassword ? "Hide password" : "Show password"
+              }
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
+          </div>
           {errors.confirmPassword && (
             <p className="text-xs text-red-600 mt-1.5">
               {errors.confirmPassword.message}
@@ -223,6 +250,45 @@ export default function SignupForm() {
         </a>
       </div>
     </div>
+  );
+}
+
+function EyeIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function EyeOffIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-3.27 2.6A9.12 9.12 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 4.06-5.94" />
+      <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+      <path d="M1 1l22 22" />
+    </svg>
   );
 }
 
