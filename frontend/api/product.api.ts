@@ -7,7 +7,7 @@ type Params = {
   colors?: string;
   search?: string;
 };
-export const getAllProducts = async (params: Params) => {
+export const getAllProducts = async (params?: Params) => {
   const query = new URLSearchParams();
   if (params?.category) {
     query.append("category", params.category);

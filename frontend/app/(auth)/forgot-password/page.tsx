@@ -3,6 +3,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { forgotPasswordAction } from "@/action/user.action";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const forgotPasswordSchema = z.object({
   email: z
@@ -17,6 +20,7 @@ export default function ForgotPasswordForm() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -24,10 +28,25 @@ export default function ForgotPasswordForm() {
       email: "",
     },
   });
+  const router = useRouter();
 
   async function onSubmit(data: ForgotPasswordFormValues) {
     console.log(data);
-    // TODO: wire up forgotPasswordAction here
+    const response = await forgotPasswordAction(data.email);
+    if (!response.status) {
+      toast.add({
+        title: response.message,
+        type: "error",
+      });
+    }
+    if (response.status) {
+      toast.add({
+        title: "Reset link sent to your email",
+        type: "success",
+      });
+      router.push("/login");
+      reset();
+    }
   }
 
   return (

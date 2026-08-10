@@ -8,6 +8,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { changePasswordAction } from "@/action/user.action";
+import { toast } from "@/components/ui/toast";
 
 const changePasswordSchema = z
   .object({
@@ -15,7 +17,7 @@ const changePasswordSchema = z
     newPassword: z
       .string()
       .min(1, "New password is required")
-      .min(8, "New password must be at least 8 characters"),
+      .max(12, "New password must be at most 12 characters"),
     confirmNewPassword: z.string().min(1, "Please confirm your new password"),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
@@ -53,7 +55,24 @@ function ChangePasswordForm({ onSubmit, onCancel }: ChangePasswordFormProps) {
 
   async function onFormSubmit(data: ChangePasswordFormValues) {
     console.log(data);
-    onSubmit?.(data);
+    const response = await changePasswordAction(
+      data.currentPassword,
+      data.newPassword,
+      data.confirmNewPassword,
+    );
+    if (!response.status) {
+      toast.add({
+        title: response.message,
+        type: "error",
+      });
+    }
+    if (response.status) {
+      toast.add({
+        title: response.message,
+        type: "success",
+      });
+      onSubmit?.(data);
+    }
   }
 
   return (

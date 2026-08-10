@@ -76,7 +76,9 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="font-bold text-base sm:text-lg">${item.price}</span>
+          <span className="font-bold text-base sm:text-lg">
+            Rs {item.price}
+          </span>
 
           <div className="flex items-center bg-muted rounded-full px-3 py-1.5 gap-3">
             <button

@@ -20,38 +20,52 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Sarah M.",
+    name: "Sabina Shrestha",
     rating: 5,
     review:
       "I'm blown away by the quality and fit of the clothes I received from Shop.co. Every piece feels well-made and true to size, exactly as described online.",
   },
   {
     id: 2,
-    name: "Alex K.",
+    name: "Aashish Gurung",
     rating: 5,
     review:
       "Finding clothes that align with my personal style used to be a challenge until I discovered Shop.co. The range of options they offer is truly remarkable, catering to a variety of tastes and occasions.",
   },
   {
     id: 3,
-    name: "James L.",
+    name: "Prakriti Thapa",
     rating: 5,
     review:
       "As someone who's always on the lookout for unique pieces, I'm thrilled to have found this store. The attention to detail and quality of each item is evident, and I always get compliments.",
   },
   {
     id: 4,
-    name: "Maria P.",
+    name: "Bibek Rai",
     rating: 5,
     review:
       "Shop.co has become my go-to for stylish, comfortable basics. The customer service is excellent and shipping is always fast — couldn't ask for a better experience.",
   },
   {
     id: 5,
-    name: "David C.",
+    name: "Nisha Maharjan",
     rating: 4,
     review:
       "Great selection and reasonable prices. A couple of items ran slightly small, but the sizing guide helped, and the return process was painless when I needed to exchange.",
+  },
+  {
+    id: 6,
+    name: "Sujan Tamang",
+    rating: 5,
+    review:
+      "Ordered a jacket for a friend's wedding and it arrived two days early, perfectly packaged. The fabric quality alone makes this worth every rupee.",
+  },
+  {
+    id: 7,
+    name: "Anjali Karki",
+    rating: 5,
+    review:
+      "What I love most is how the website makes it easy to find exactly what I'm picturing. Every order so far has matched the photos perfectly, down to the stitching.",
   },
 ];
 
@@ -122,7 +136,7 @@ function HappyCustomers() {
               onClick={() => api?.scrollPrev()}
               disabled={!canScrollPrev}
               aria-label="Previous testimonial"
-              className="h-9 w-9 flex items-center justify-center rounded-full border border-border disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-full border border-border disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted transition-colors hover:text-black"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -130,7 +144,7 @@ function HappyCustomers() {
               onClick={() => api?.scrollNext()}
               disabled={!canScrollNext}
               aria-label="Next testimonial"
-              className="h-9 w-9 flex items-center justify-center rounded-full border border-border disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-full border border-border disabled:opacity-30 disabled:cursor-not-allowed hover:bg-muted transition-colors hover:text-black"
             >
               <ArrowRight className="h-4 w-4" />
             </Button>

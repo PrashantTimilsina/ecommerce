@@ -39,3 +39,40 @@ export const updateUserProfile = async (name: string) => {
     body: JSON.stringify({ name }),
   });
 };
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string,
+) => {
+  const token = await getToken();
+  return await myFetch(`${END_POINTS.CHANGE_PASSWORD}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body: JSON.stringify({ currentPassword, newPassword, confirmNewPassword }),
+  });
+};
+export const forgotPassword = async (email: string) => {
+  return await myFetch(`${END_POINTS.FORGOT_PASSWORD}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+};
+export const resetPassword = async (
+  token: string,
+  newPassword: string,
+  confirmNewPassword: string,
+) => {
+  return await myFetch(`${END_POINTS.RESET_PASSWORD}${token}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({ newPassword, confirmNewPassword }),
+  });
+};

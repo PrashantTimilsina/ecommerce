@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const navLinks = ["Dummy", "Dummy", "Dummy"];
+const navLinks = ["Home", "New Arrivals", "Top Selling", "Contact"];
 
 function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -65,11 +65,15 @@ function Navbar() {
         </Link>
 
         {/* Desktop nav links + search */}
-        <ul className="hidden lg:flex text-[#000000] items-center gap-5">
+        <ul className="hidden lg:flex text-[#000000] items-center gap-7 flex-1 justify-center">
           {navLinks.map((link, i) => (
-            <li key={i} className="whitespace-nowrap cursor-pointer">
+            <Link
+              href={`#${link}`}
+              key={i}
+              className="whitespace-nowrap cursor-pointer"
+            >
               {link}
-            </li>
+            </Link>
           ))}
           <div className="relative flex items-center">
             <Search className="absolute left-3 h-4 w-4 text-gray-500" />
@@ -130,9 +134,9 @@ function Navbar() {
                 </div>
                 <ul className="flex flex-col gap-4 text-black text-base">
                   {navLinks.map((link, i) => (
-                    <li key={i} className="cursor-pointer">
+                    <Link href={`#${link}`} key={i} className="cursor-pointer">
                       {link}
-                    </li>
+                    </Link>
                   ))}
                 </ul>
               </div>

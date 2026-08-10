@@ -353,13 +353,13 @@ function ProductHero({ product }: { product: Product }) {
               {" "}
               {product.discount > 0 && (
                 <span className="text-muted-foreground  text-lg font-bold">
-                  ${finalPrice}
+                  Rs {finalPrice}
                 </span>
               )}
               <span
                 className={`font-semibold text-lg ${product.discount > 0 ? "line-through text-muted-foreground" : ""}`}
               >
-                ${product.price}
+                Rs {product.price}
               </span>
               {product.discount > 0 && (
                 <span className="text-xs font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">

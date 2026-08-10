@@ -7,5 +7,8 @@ const END_POINTS = {
   CART: `${API}/users/add-to-cart/`,
   ME: `${API}/users/me/`,
   REMOVE_FROM_CART: `${API}/users/remove-from-cart/`,
+  CHANGE_PASSWORD: `${API}/users/change-password/`,
+  FORGOT_PASSWORD: `${API}/users/forgot-password/`,
+  RESET_PASSWORD: `${API}/users/reset-password/`,
 };
 export default END_POINTS;

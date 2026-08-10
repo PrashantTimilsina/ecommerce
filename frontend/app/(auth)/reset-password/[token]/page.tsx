@@ -4,29 +4,30 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useRouter, useSearchParams } from "next/navigation";
-// import { resetPasswordAction } from "@/action/auth.action";
+import { useParams, useRouter } from "next/navigation";
+
 import { toast } from "@/components/ui/toast";
+import { resetPasswordAction } from "@/action/user.action";
 
 const resetPasswordSchema = z
   .object({
-    password: z
+    newPassword: z
       .string()
       .min(1, "Password is required")
       .min(4, "Password must be at least 4 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    confirmNewPassword: z.string().min(1, "Please confirm your password"),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["confirmNewPassword"],
   });
 
 type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token") ?? "";
+  const { token } = useParams();
+  // const token = searchParams.get("token") ?? "";
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -38,27 +39,26 @@ export default function ResetPasswordForm() {
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
     },
   });
 
   async function onSubmit(data: ResetPasswordFormValues) {
-    console.log({ ...data, token });
-    // const res = await resetPasswordAction(
-    //   token,
-    //   data.password,
-    //   data.confirmPassword,
-    // );
-    // console.log(res);
-
-    // if (!res.status) {
-    //   toast.add({ title: "Error", description: res.message, type: "error" });
-    // }
-    // if (res.status) {
-    //   toast.add({ title: "Password reset successful", type: "success" });
-    //   router.push("/login");
-    // }
+    const response = await resetPasswordAction(
+      token as string,
+      data.newPassword,
+      data.confirmNewPassword,
+    );
+    console.log(response);
+    if (!response.status) {
+      toast.add({ title: response.message, type: "error" });
+      return;
+    }
+    if (response.status) {
+      toast.add({ title: "Password reset successful", type: "success" });
+      router.push("/login");
+    }
   }
 
   return (
@@ -78,7 +78,7 @@ export default function ResetPasswordForm() {
         >
           <div>
             <label
-              htmlFor="password"
+              htmlFor="newPassword"
               className="block text-sm font-medium text-gray-700 mb-1.5"
             >
               New Password
@@ -88,12 +88,12 @@ export default function ResetPasswordForm() {
                 <LockIcon />
               </span>
               <input
-                id="password"
+                id="newPassword"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter new password"
-                {...register("password")}
+                {...register("newPassword")}
                 className={`w-full rounded-lg border pl-10 pr-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
-                  errors.password
+                  errors.newPassword
                     ? "border-red-400 focus:ring-red-100"
                     : "border-gray-300 focus:border-gray-400 focus:ring-gray-100"
                 }`}
@@ -108,16 +108,16 @@ export default function ResetPasswordForm() {
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
-            {errors.password && (
+            {errors.newPassword && (
               <p className="text-xs text-red-600 mt-1.5">
-                {errors.password.message}
+                {errors.newPassword.message}
               </p>
             )}
           </div>
 
           <div>
             <label
-              htmlFor="confirmPassword"
+              htmlFor="confirmNewPassword"
               className="block text-sm font-medium text-gray-700 mb-1.5"
             >
               Confirm New Password
@@ -127,12 +127,12 @@ export default function ResetPasswordForm() {
                 <LockIcon />
               </span>
               <input
-                id="confirmPassword"
+                id="confirmNewPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Re-enter new password"
-                {...register("confirmPassword")}
+                {...register("confirmNewPassword")}
                 className={`w-full rounded-lg border pl-10 pr-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-colors ${
-                  errors.confirmPassword
+                  errors.confirmNewPassword
                     ? "border-red-400 focus:ring-red-100"
                     : "border-gray-300 focus:border-gray-400 focus:ring-gray-100"
                 }`}
@@ -149,9 +149,9 @@ export default function ResetPasswordForm() {
                 {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
-            {errors.confirmPassword && (
+            {errors.confirmNewPassword && (
               <p className="text-xs text-red-600 mt-1.5">
-                {errors.confirmPassword.message}
+                {errors.confirmNewPassword.message}
               </p>
             )}
           </div>

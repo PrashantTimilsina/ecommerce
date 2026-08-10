@@ -13,6 +13,7 @@ function CartPage() {
   useEffect(() => {
     async function fetchCartItems() {
       try {
+        window.scrollTo(0, 0);
         const response = await getUserAction();
 
         // response.data is now GetUserData — fully typed, no casts
@@ -83,8 +84,6 @@ function CartPage() {
             subtotal={subtotal}
             discountPercent={20}
             deliveryFee={15}
-            onCheckout={() => console.log("Proceeding to checkout")}
-            onApplyPromo={(code) => console.log("Applying promo:", code)}
           />
         )}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 interface DressStyle {
   id: number;
@@ -39,10 +40,35 @@ const styles: DressStyle[] = [
   },
 ];
 
+// function DressStyleCard({ style }: { style: DressStyle }) {
+//   return (
+//     <Link href={`/filter?category=${style.name}`}>
+//       <div
+//         className={`group relative rounded-2xl overflow-hidden bg-muted h-56 sm:h-64 md:h-72 ${style.colSpan}`}
+//       >
+//         <Image
+//           src={style.image}
+//           alt={style.name}
+//           fill
+//           className="object-cover brightness-75 contrast-105 saturate-95 transition-transform duration-300 ease-out group-hover:scale-105"
+//           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+//         />
+
+//         {/* dim overlay: darker at bottom-left where the label sits, subtle everywhere else */}
+//         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+
+//         <span className="absolute top-4 left-4 sm:top-6 sm:left-6 font-bold text-lg sm:text-xl text-white drop-shadow-md">
+//           {style.name}
+//         </span>
+//       </div>
+//     </Link>
+//   );
+// }
 function DressStyleCard({ style }: { style: DressStyle }) {
   return (
-    <div
-      className={`group relative rounded-2xl overflow-hidden bg-muted h-56 sm:h-64 md:h-72 ${style.colSpan}`}
+    <Link
+      href={`/filter?category=${style.name}`}
+      className={`group relative block rounded-2xl overflow-hidden bg-muted h-56 sm:h-64 md:h-72 ${style.colSpan}`}
     >
       <Image
         src={style.image}
@@ -52,16 +78,14 @@ function DressStyleCard({ style }: { style: DressStyle }) {
         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
 
-      {/* dim overlay: darker at bottom-left where the label sits, subtle everywhere else */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
 
       <span className="absolute top-4 left-4 sm:top-6 sm:left-6 font-bold text-lg sm:text-xl text-white drop-shadow-md">
         {style.name}
       </span>
-    </div>
+    </Link>
   );
 }
-
 function BrowseByDressStyle() {
   return (
     <section className="w-full py-8 sm:py-10 md:py-12">

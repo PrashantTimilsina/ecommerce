@@ -66,7 +66,7 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="flex items-center gap-2 mt-0.5">
             {product.discount > 0 && (
               <span className="text-lg font-bold tracking-tight">
-                $
+                Rs{" "}
                 {parseInt(
                   (
                     product.price -
@@ -82,7 +82,7 @@ export function ProductCard({ product }: { product: Product }) {
                   : ""
               }`}
             >
-              ${product.price}
+              Rs {product.price}
             </span>
           </div>
         </div>
