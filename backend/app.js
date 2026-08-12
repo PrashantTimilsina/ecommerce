@@ -7,9 +7,9 @@ import productRoutes from "./routes/product.routes.js";
 import reviewRoutes from "./routes/reviews.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "./swagger.js";
+
 const app = express();
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

@@ -40,7 +40,7 @@ const paymentIcons = [
 
 function Footer() {
   return (
-    <footer className="w-full">
+    <footer className="w-full" id="Contact">
       <div className="container mx-auto px-4">
         {/* Newsletter banner */}
         <div className="bg-black text-white rounded-3xl px-6 sm:px-10 md:px-14 py-8 sm:py-10 flex flex-col lg:flex-row items-center justify-between gap-6 -mb-10 sm:-mb-12 relative z-10">

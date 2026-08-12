@@ -8,7 +8,7 @@ const mailjet = new Mailjet({
 });
 
 function sendEmail(toEmail, toName, resetToken) {
-  const resetURL = `https://localhost:3000/user/reset/${resetToken}`;
+  const resetURL = `http://localhost:3001/reset-password/${resetToken}`;
 
   mailjet
     .post("send", { version: "v3.1" })
