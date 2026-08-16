@@ -10,8 +10,8 @@ import {
 export const getUserAction = async () => {
   return await getUser();
 };
-export const updateUserProfileAction = async (name: string) => {
-  return await updateUserProfile(name);
+export const updateUserProfileAction = async (name: string, image?: File) => {
+  return await updateUserProfile(name, image);
 };
 export const changePasswordAction = async (
   currentPassword: string,

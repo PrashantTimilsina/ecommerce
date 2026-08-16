@@ -15,6 +15,7 @@ export type GetUserData = {
     name: string;
     email: string;
     role: string;
+    image?: string;
     cartItems: ApiCartItem[];
   };
 };
@@ -28,15 +29,17 @@ export const getUser = async () => {
     },
   });
 };
-export const updateUserProfile = async (name: string) => {
+export const updateUserProfile = async (name: string, image?: File) => {
   const token = await getToken();
+  const formData = new FormData();
+  formData.append("name", name);
+  if (image) formData.append("image", image);
   return await myFetch(`${END_POINTS.ME}`, {
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     method: "PATCH",
-    body: JSON.stringify({ name }),
+    body: formData,
   });
 };
 export const changePassword = async (

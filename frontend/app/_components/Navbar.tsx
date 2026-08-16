@@ -68,7 +68,7 @@ function Navbar() {
         <ul className="hidden lg:flex text-[#000000] items-center gap-7 flex-1 justify-center">
           {navLinks.map((link, i) => (
             <Link
-              href={`#${link}`}
+              href={link !== "Home" ? `#${link}` : "/"}
               key={i}
               className="whitespace-nowrap cursor-pointer"
             >
@@ -134,7 +134,11 @@ function Navbar() {
                 </div>
                 <ul className="flex flex-col gap-4 text-black text-base">
                   {navLinks.map((link, i) => (
-                    <Link href={`#${link}`} key={i} className="cursor-pointer">
+                    <Link
+                      href={link !== "Home" ? `#${link}` : "/"}
+                      key={i}
+                      className="cursor-pointer"
+                    >
                       {link}
                     </Link>
                   ))}

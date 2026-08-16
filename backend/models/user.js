@@ -37,6 +37,14 @@ const userSchema = new mongoose.Schema(
         return this.isNew;
       },
     },
+    image: {
+      type: String,
+      default: null,
+    },
+    cloudinaryId: {
+      type: String,
+      default: null,
+    },
     cartItems: [
       {
         _id: false,

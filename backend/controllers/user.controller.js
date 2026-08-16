@@ -2,6 +2,7 @@ import Product from "../models/product.js";
 import User from "../models/user.js";
 import ApiFeatures from "../utils/apiFeatures.js";
 import { catchAsync } from "../utils/catchAsync.js";
+import { deleteImage, uploadImage } from "../config/cloudinary.js";
 // import { cookieOptions } from "./auth.controller.js";
 
 export const getCurrentUser = catchAsync(async (req, res) => {
@@ -17,17 +18,43 @@ export const getCurrentUser = catchAsync(async (req, res) => {
 });
 export const updateUserProfile = catchAsync(async (req, res) => {
   const { name } = req.body;
-  if (!name) {
+  const file = req.file;
+
+  if (!name && !file) {
     return res.status(400).json({ status: false, message: "Name is required" });
   }
-  const user = await User.findByIdAndUpdate(
-    req.user.id,
-    { name },
-    { new: true },
-  );
+
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return res.status(404).json({ status: false, message: "User not found" });
+  }
+
+  const updates = {};
+  if (name) updates.name = name;
+
+  let oldCloudinaryId = null;
+  if (file) {
+    const result = await uploadImage(file);
+    updates.image = result.secure_url;
+    updates.cloudinaryId = result.public_id;
+    oldCloudinaryId = user.cloudinaryId;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
+    new: true,
+  });
+
+  if (oldCloudinaryId) {
+    try {
+      await deleteImage(oldCloudinaryId);
+    } catch (err) {
+      console.error("Failed to delete old profile image", err);
+    }
+  }
+
   return res
     .status(200)
-    .json({ status: true, message: "Profile updated successfully", user });
+    .json({ status: true, message: "Profile updated successfully", data: { user: updatedUser } });
 });
 export const deleteUserProfile = catchAsync(async (req, res) => {
   const { deleteConfirm } = req.body;

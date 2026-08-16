@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Camera,
@@ -35,9 +35,17 @@ export type User = {
   email: string;
   role: string;
   avatar?: string;
+  image?: string;
 };
 
-const DEFAULT_AVATAR = "/users/default-avatar.png";
+type UpdateProfileResponse = {
+  status: boolean;
+  message: string;
+  data?: { user: User };
+};
+
+const DEFAULT_AVATAR =
+  "data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100' height='100' fill='%23f3f4f6'/%3e%3ctext x='50%25' y='50%25' font-size='45' text-anchor='middle' dy='.3em' fill='%239ca3af'%3e👤%3c/text%3e%3c/svg%3e";
 
 function AccountPage({ user }: { user: User }) {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -45,7 +53,7 @@ function AccountPage({ user }: { user: User }) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(user.name);
   const [avatarPreview, setAvatarPreview] = useState(
-    user.avatar ?? DEFAULT_AVATAR,
+    user.image ?? DEFAULT_AVATAR,
   );
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isSavingName, setIsSavingName] = useState(false);
@@ -54,6 +62,9 @@ function AccountPage({ user }: { user: User }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,7 +74,25 @@ function AccountPage({ user }: { user: User }) {
     setAvatarPreview(localPreview);
     setIsUploadingAvatar(true);
 
-    await new Promise((res) => setTimeout(res, 600));
+    const response = (await updateUserProfileAction(
+      name,
+      file,
+    )) as UpdateProfileResponse;
+    if (response.status) {
+      // Backend returns user in data.user format
+      const updatedUser = response.data?.user;
+      if (updatedUser?.image) {
+        setAvatarPreview(updatedUser.image);
+      }
+      toast.add({
+        title: "Profile image updated successfully",
+        type: "success",
+      });
+    } else {
+      setAvatarPreview(user.image ?? DEFAULT_AVATAR);
+      toast.add({ title: response.message, type: "error" });
+    }
+
     setIsUploadingAvatar(false);
     e.target.value = "";
   };
@@ -84,12 +113,15 @@ function AccountPage({ user }: { user: User }) {
     setIsSavingName(true);
     console.log("Updating name:", { name: trimmed });
 
-    const response = await updateUserProfileAction(trimmed);
+    const response = (await updateUserProfileAction(
+      trimmed,
+    )) as UpdateProfileResponse;
     if (response.status) {
       toast.add({ title: "Name updated successfully", type: "success" });
+      setName(trimmed);
+    } else {
+      toast.add({ title: response.message, type: "error" });
     }
-    await new Promise((res) => setTimeout(res, 400));
-    setName(trimmed);
     setIsSavingName(false);
     setIsEditingName(false);
   };
