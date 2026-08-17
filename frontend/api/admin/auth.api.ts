@@ -22,3 +22,13 @@ export const getAllUsers = async () => {
   });
   return response;
 };
+export const getAllProducts = async () => {
+  const token = await getToken();
+  const response = await myFetch(`${END_POINTS.ADMIN.PRODUCTS}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};

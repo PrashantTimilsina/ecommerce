@@ -7,10 +7,8 @@ import {
   LogOut,
   Menu,
   Package,
-  Pencil,
   Plus,
   Search,
-  Trash2,
   Users,
 } from "lucide-react";
 import { toast } from "@/components/ui/toast";
@@ -31,12 +29,8 @@ export type AdminViewId =
   | "dashboard"
   | "users-all"
   | "users-add"
-  | "users-update"
-  | "users-delete"
   | "products-all"
-  | "products-add"
-  | "products-update"
-  | "products-delete";
+  | "products-add";
 
 type NavItem = {
   id: AdminViewId;
@@ -61,16 +55,6 @@ const navGroups: NavGroup[] = [
         icon: <Search className="size-4" />,
       },
       { id: "users-add", label: "Add User", icon: <Plus className="size-4" /> },
-      {
-        id: "users-update",
-        label: "Update User",
-        icon: <Pencil className="size-4" />,
-      },
-      {
-        id: "users-delete",
-        label: "Delete User",
-        icon: <Trash2 className="size-4" />,
-      },
     ],
   },
   {
@@ -86,16 +70,6 @@ const navGroups: NavGroup[] = [
         id: "products-add",
         label: "Add Product",
         icon: <Plus className="size-4" />,
-      },
-      {
-        id: "products-update",
-        label: "Update Product",
-        icon: <Pencil className="size-4" />,
-      },
-      {
-        id: "products-delete",
-        label: "Delete Product",
-        icon: <Trash2 className="size-4" />,
       },
     ],
   },

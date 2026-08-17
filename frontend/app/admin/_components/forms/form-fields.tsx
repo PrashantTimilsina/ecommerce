@@ -9,6 +9,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 type FormFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -18,6 +19,7 @@ type FormFieldProps<T extends FieldValues> = {
   placeholder?: string;
   step?: string;
   className?: string;
+  inputClassName?: string;
 };
 
 export function FormField<T extends FieldValues>({
@@ -28,6 +30,7 @@ export function FormField<T extends FieldValues>({
   placeholder,
   step,
   className,
+  inputClassName,
 }: FormFieldProps<T>) {
   return (
     <Controller
@@ -44,7 +47,10 @@ export function FormField<T extends FieldValues>({
             step={step}
             placeholder={placeholder}
             {...field}
-            className={fieldState.error ? "border-destructive" : undefined}
+            className={cn(
+              fieldState.error ? "border-destructive" : undefined,
+              inputClassName,
+            )}
           />
           {fieldState.error && (
             <p className="mt-1 text-xs font-medium text-destructive">
@@ -63,6 +69,7 @@ type FormSelectProps<T extends FieldValues> = {
   label: string;
   options: Array<{ value: string; label: string }>;
   className?: string;
+  inputClassName?: string;
 };
 
 export function FormSelect<T extends FieldValues>({
@@ -71,6 +78,7 @@ export function FormSelect<T extends FieldValues>({
   label,
   options,
   className,
+  inputClassName,
 }: FormSelectProps<T>) {
   return (
     <Controller
@@ -85,7 +93,11 @@ export function FormSelect<T extends FieldValues>({
             id={name}
             value={field.value as string}
             onChange={(e) => field.onChange(e.target.value)}
-            className="h-9 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className={cn(
+              "h-9 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+              fieldState.error ? "border-destructive" : undefined,
+              inputClassName,
+            )}
           >
             {options.map((option) => (
               <option key={option.value} value={option.value}>

@@ -7,17 +7,20 @@ export type AdminUser = {
 };
 
 export type AdminProduct = {
-  _id: string;
+  _id?: string;
+  discount: number;
+  numReviews?: number;
+  status?: "active" | "draft" | "archived";
+  createdAt?: string;
+  image?: string;
   title: string;
   category: string;
   price: number;
-  discount: number;
+
   stock: number;
   rating: number;
-  numReviews: number;
-  status: "active" | "draft" | "archived";
-  createdAt: string;
-  image: string;
+
+  images?: string[];
 };
 
 export const dummyUsers: AdminUser[] = [

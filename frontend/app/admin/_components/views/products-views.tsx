@@ -1,28 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   type ProductFormValues,
   productFormDefaults,
   productFormResolver,
 } from "../forms/schema";
 import { FormField, FormSelect } from "../forms/form-fields";
+import { DataTable } from "../data-table/data-table";
+import { createProductColumns } from "../data-table/products-columns";
 import type { AdminProduct } from "../data";
 
 function generateId() {
@@ -36,139 +35,243 @@ type ProductsViewProps = {
   onDeleteProduct: (id: string) => void;
 };
 
-export function AllProductsView({ products }: { products: AdminProduct[] }) {
-  const [searchId, setSearchId] = useState("");
+export function AllProductsView({
+  products,
+  onUpdateProduct,
+  onDeleteProduct,
+}: Pick<
+  ProductsViewProps,
+  "products" | "onUpdateProduct" | "onDeleteProduct"
+>) {
   const [selected, setSelected] = useState<AdminProduct | null>(null);
+  const [editProduct, setEditProduct] = useState<AdminProduct | null>(null);
+  const [deleteProduct, setDeleteProduct] = useState<AdminProduct | null>(null);
 
-  const filtered = useMemo(() => {
-    const id = searchId.trim().toLowerCase();
-    if (!id) return products;
-    return products.filter(
-      (p) =>
-        p._id.toLowerCase().includes(id) || p.title.toLowerCase().includes(id),
-    );
-  }, [products, searchId]);
+  const columns = useMemo(
+    () =>
+      createProductColumns({
+        onEdit: (product) => setEditProduct(product),
+        onDelete: (product) => setDeleteProduct(product),
+      }),
+    [],
+  );
 
   return (
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">All Products</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Search products by ID or title and view the full catalog
+          Search products by ID or title and manage the catalog
         </p>
       </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Input
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-          placeholder="Search by product ID or title..."
-          className="h-10 rounded-lg px-4 shadow-sm sm:max-w-sm"
-        />
-        <p className="text-xs text-muted-foreground">
-          Showing {filtered.length} of {products.length} products
-        </p>
-      </div>
+      <DataTable
+        columns={columns}
+        data={products}
+        searchKey="product"
+        searchPlaceholder="Search by product ID or title..."
+        resultCountLabel="products"
+        getRowId={(product) => product._id ?? ""}
+        selectedId={selected?._id}
+        onRowClick={setSelected}
+      />
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-right">Discount</TableHead>
-                <TableHead className="text-right">Stock</TableHead>
-                <TableHead className="text-right">Rating</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((product) => (
-                <TableRow
-                  key={product._id}
-                  onClick={() => setSelected(product)}
-                  className={
-                    selected?._id === product._id
-                      ? "bg-muted/60"
-                      : "cursor-pointer"
-                  }
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={product.image}
-                        alt={product.title}
-                        width={36}
-                        height={36}
-                        className="size-9 shrink-0 rounded-md object-cover"
-                      />
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{product.title}</p>
-                        <p className="truncate font-mono text-xs text-muted-foreground">
-                          {product._id}
-                        </p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {product.category}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    ${product.price.toFixed(2)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {product.discount > 0 ? (
-                      <Badge variant="secondary">{product.discount}%</Badge>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <span
-                      className={
-                        product.stock === 0
-                          ? "font-medium text-destructive"
-                          : undefined
-                      }
-                    >
-                      {product.stock}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    ★ {product.rating}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        product.status === "active"
-                          ? "default"
-                          : product.status === "draft"
-                            ? "outline"
-                            : "secondary"
-                      }
-                    >
-                      {product.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filtered.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={7}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    No products found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <EditProductDialog
+        product={editProduct}
+        open={!!editProduct}
+        onOpenChange={(open) => {
+          if (!open) setEditProduct(null);
+        }}
+        onSave={onUpdateProduct}
+      />
+
+      <DeleteProductDialog
+        product={deleteProduct}
+        open={!!deleteProduct}
+        onOpenChange={(open) => {
+          if (!open) setDeleteProduct(null);
+        }}
+        onConfirm={() => {
+          if (deleteProduct) onDeleteProduct(deleteProduct._id ?? "");
+        }}
+      />
     </div>
+  );
+}
+
+function EditProductDialog({
+  product,
+  open,
+  onOpenChange,
+  onSave,
+}: {
+  product: AdminProduct | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (product: AdminProduct) => void;
+}) {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<ProductFormValues>({
+    resolver: productFormResolver,
+    defaultValues: productFormDefaults,
+  });
+
+  useEffect(() => {
+    if (open && product) {
+      reset({
+        title: product.title,
+        category: product.category,
+        price: product.price,
+        discount: product.discount,
+        stock: product.stock,
+        rating: product.rating,
+        status: product.status,
+      });
+    }
+  }, [open, product, reset]);
+
+  function onSubmit(values: ProductFormValues) {
+    if (!product) return;
+    console.log("[Admin] Update Product form values:", values, product._id);
+    onSave({ ...product, ...values });
+    onOpenChange(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Edit product</DialogTitle>
+          <DialogDescription>
+            Update the details for {product?.title}.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              control={control}
+              name="title"
+              label="Title"
+              className="sm:col-span-2"
+              inputClassName="h-10"
+            />
+            <FormField
+              control={control}
+              name="category"
+              label="Category"
+              placeholder="e.g. T-Shirts"
+              className="sm:col-span-2"
+              inputClassName="h-10"
+            />
+            <FormField
+              control={control}
+              name="price"
+              label="Price ($)"
+              type="number"
+              step="0.01"
+              inputClassName="h-10"
+            />
+            <FormField
+              control={control}
+              name="discount"
+              label="Discount (%)"
+              type="number"
+              inputClassName="h-10"
+            />
+            <FormField
+              control={control}
+              name="stock"
+              label="Stock"
+              type="number"
+              inputClassName="h-10"
+            />
+            <FormField
+              control={control}
+              name="rating"
+              label="Rating"
+              type="number"
+              step="0.1"
+              inputClassName="h-10"
+            />
+            <FormSelect
+              control={control}
+              name="status"
+              label="Status"
+              options={[
+                { value: "active", label: "Active" },
+                { value: "draft", label: "Draft" },
+                { value: "archived", label: "Archived" },
+              ]}
+              className="sm:col-span-2"
+              inputClassName="h-10"
+            />
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-10 cursor-pointer rounded-lg bg-primary px-6 shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
+            >
+              {isSubmitting ? "Saving..." : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteProductDialog({
+  product,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  product: AdminProduct | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete product?</DialogTitle>
+          <DialogDescription>
+            This will permanently remove{" "}
+            <span className="font-medium text-foreground">
+              {product?.title}
+            </span>{" "}
+            from the catalog. This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              onConfirm();
+              onOpenChange(false);
+            }}
+          >
+            Delete product
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -222,6 +325,7 @@ export function AddProductView({
                 label="Title"
                 placeholder="Product title"
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
@@ -229,6 +333,7 @@ export function AddProductView({
                 label="Category"
                 placeholder="e.g. T-Shirts"
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
@@ -236,6 +341,7 @@ export function AddProductView({
                 label="Price ($)"
                 type="number"
                 step="0.01"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
@@ -243,12 +349,14 @@ export function AddProductView({
                 label="Discount (%)"
                 type="number"
                 step="1"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
                 name="stock"
                 label="Stock"
                 type="number"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
@@ -256,6 +364,7 @@ export function AddProductView({
                 label="Rating"
                 type="number"
                 step="0.1"
+                inputClassName="h-10"
               />
               <FormSelect
                 control={control}
@@ -267,6 +376,7 @@ export function AddProductView({
                   { value: "archived", label: "Archived" },
                 ]}
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
             </div>
 
@@ -280,284 +390,6 @@ export function AddProductView({
           </form>
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-export function UpdateProductView({
-  products,
-  onUpdateProduct,
-}: Pick<ProductsViewProps, "products" | "onUpdateProduct">) {
-  const [searchId, setSearchId] = useState("");
-  const [target, setTarget] = useState<AdminProduct | null>(null);
-  const [notFound, setNotFound] = useState(false);
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useForm<ProductFormValues>({
-    resolver: productFormResolver,
-    defaultValues: productFormDefaults,
-  });
-
-  function findProduct() {
-    const found = products.find(
-      (p) => p._id.toLowerCase() === searchId.trim().toLowerCase(),
-    );
-    if (found) {
-      setTarget(found);
-      setNotFound(false);
-      reset({
-        title: found.title,
-        category: found.category,
-        price: found.price,
-        discount: found.discount,
-        stock: found.stock,
-        rating: found.rating,
-        status: found.status,
-      });
-    } else {
-      setTarget(null);
-      setNotFound(true);
-    }
-  }
-
-  function onSubmit(values: ProductFormValues) {
-    if (!target) return;
-    console.log(
-      "[Admin] Update Product form values:",
-      values,
-      "product id:",
-      target._id,
-    );
-    onUpdateProduct({
-      ...target,
-      ...values,
-    });
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Update Product
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Find a product by ID, edit its details and save
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Find product</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Input
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter product ID (e.g. p_aaa111bbb)"
-            className="h-10 rounded-lg px-4 shadow-sm sm:max-w-md"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") findProduct();
-            }}
-          />
-          <Button
-            onClick={findProduct}
-            className="h-10 cursor-pointer rounded-lg bg-primary px-6 shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
-          >
-            Search
-          </Button>
-          {target && <Badge variant="outline">{target.title}</Badge>}
-          {notFound && (
-            <p className="text-sm font-medium text-destructive">
-              No product found with that ID.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {target && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit “{target.title}”</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <FormField
-                  control={control}
-                  name="title"
-                  label="Title"
-                  className="sm:col-span-2"
-                />
-                <FormField
-                  control={control}
-                  name="category"
-                  label="Category"
-                  className="sm:col-span-2"
-                />
-                <FormField
-                  control={control}
-                  name="price"
-                  label="Price ($)"
-                  type="number"
-                  step="0.01"
-                />
-                <FormField
-                  control={control}
-                  name="discount"
-                  label="Discount (%)"
-                  type="number"
-                />
-                <FormField
-                  control={control}
-                  name="stock"
-                  label="Stock"
-                  type="number"
-                />
-                <FormField
-                  control={control}
-                  name="rating"
-                  label="Rating"
-                  type="number"
-                  step="0.1"
-                />
-                <FormSelect
-                  control={control}
-                  name="status"
-                  label="Status"
-                  options={[
-                    { value: "active", label: "Active" },
-                    { value: "draft", label: "Draft" },
-                    { value: "archived", label: "Archived" },
-                  ]}
-                  className="sm:col-span-2"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="mt-2 h-10 w-full cursor-pointer bg-gradient-to-r from-primary to-primary/80 text-sm font-semibold shadow-md shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0 sm:w-auto sm:px-8"
-              >
-                {isSubmitting ? "Saving..." : "Save changes"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-export function DeleteProductView({
-  products,
-  onDeleteProduct,
-}: Pick<ProductsViewProps, "products" | "onDeleteProduct">) {
-  const [searchId, setSearchId] = useState("");
-  const [target, setTarget] = useState<AdminProduct | null>(null);
-  const [notFound, setNotFound] = useState(false);
-
-  function findProduct() {
-    const found = products.find(
-      (p) => p._id.toLowerCase() === searchId.trim().toLowerCase(),
-    );
-    if (found) {
-      setTarget(found);
-      setNotFound(false);
-    } else {
-      setTarget(null);
-      setNotFound(true);
-    }
-  }
-
-  function handleDelete() {
-    if (!target) return;
-    console.log("[Admin] Delete Product payload:", {
-      id: target._id,
-      title: target.title,
-    });
-    onDeleteProduct(target._id);
-    setTarget(null);
-    setSearchId("");
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Delete Product
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Find a product by ID and remove it from the catalog
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Find product</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Input
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter product ID (e.g. p_aaa111bbb)"
-            className="h-10 rounded-lg px-4 shadow-sm sm:max-w-md"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") findProduct();
-            }}
-          />
-          <Button
-            onClick={findProduct}
-            className="h-10 cursor-pointer rounded-lg bg-primary px-6 shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
-          >
-            Search
-          </Button>
-          {notFound && (
-            <p className="text-sm font-medium text-destructive">
-              No product found with that ID.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {target && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Delete “{target.title}”?</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <Image
-                src={target.image}
-                alt={target.title}
-                width={48}
-                height={48}
-                className="size-12 shrink-0 rounded-md object-cover"
-              />
-              <p className="text-sm text-muted-foreground">
-                This will permanently remove{" "}
-                <span className="font-medium text-foreground">
-                  {target.title}
-                </span>{" "}
-                from the catalog. This action cannot be undone.
-              </p>
-            </div>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              className="h-10 w-full cursor-pointer bg-gradient-to-r from-destructive to-destructive/80 text-sm font-semibold shadow-md shadow-destructive/25 transition-all hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 sm:w-auto sm:px-8"
-            >
-              Delete product
-            </Button>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

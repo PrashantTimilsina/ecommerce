@@ -10,37 +10,50 @@ import {
   type AdminViewId,
 } from "../_components/sidebar";
 import { DashboardView } from "../_components/views/dashboard-view";
-import {
-  AddUserView,
-  AllUsersView,
-  DeleteUserView,
-  UpdateUserView,
-} from "../_components/views/users-views";
+import { AddUserView, AllUsersView } from "../_components/views/users-views";
 import {
   AddProductView,
   AllProductsView,
-  DeleteProductView,
-  UpdateProductView,
 } from "../_components/views/products-views";
+import type { AdminProduct, AdminUser } from "../_components/data";
 import {
-  type AdminProduct,
-  type AdminUser,
-  dummyProducts,
-  dummyUsers,
-} from "../_components/data";
-import { getAllUsersAction } from "@/action/admin/auth.action";
+  getAllProductsAction,
+  getAllUsersAction,
+} from "@/action/admin/auth.action";
 
 export default function AdminDashboardPage() {
   const [activeView, setActiveView] = useState<AdminViewId>("dashboard");
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [products, setProducts] = useState<AdminProduct[]>(dummyProducts);
-  useEffect(() => {
-    async function fetchAllUsers() {
-      const response = await getAllUsersAction();
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+  // useEffect(() => {
+  //   async function fetchAllUsers() {
+  //     const response = await getAllUsersAction();
 
-      setUsers(response.data as AdminUser[]);
+  //     setUsers(response.data as AdminUser[]);
+  //   }
+  //   fetchAllUsers();
+  // }, []);
+  useEffect(() => {
+    async function fetchData() {
+      const [usersResult, productsResult] = await Promise.allSettled([
+        getAllUsersAction(),
+        getAllProductsAction(), // replace with your actual second action
+      ]);
+
+      if (usersResult.status === "fulfilled") {
+        setUsers(usersResult.value.data as AdminUser[]);
+      } else {
+        console.error("Failed to fetch users:", usersResult.reason);
+      }
+
+      if (productsResult.status === "fulfilled") {
+        setProducts(productsResult.value.data as AdminProduct[]);
+      } else {
+        console.error("Failed to fetch products:", productsResult.reason);
+      }
     }
-    fetchAllUsers();
+
+    fetchData();
   }, []);
 
   function handleAddUser(user: AdminUser) {
@@ -85,9 +98,9 @@ export default function AdminDashboardPage() {
 
   function handleUpdateProduct(product: AdminProduct) {
     console.log("[Admin] Update Product payload:", product);
-    setProducts((prev) =>
-      prev.map((p) => (p._id === product._id ? product : p)),
-    );
+    // setProducts((prev) =>
+    //   prev.map((p) => (p._id === product._id ? product : p)),
+    // );
     toast.add({
       title: "Product updated",
       description: `${product.title} was updated.`,
@@ -97,7 +110,7 @@ export default function AdminDashboardPage() {
 
   function handleDeleteProduct(id: string) {
     console.log("[Admin] Delete Product payload:", { id });
-    setProducts((prev) => prev.filter((p) => p._id !== id));
+    // setProducts((prev) => prev.filter((p) => p._id !== id));
     toast.add({
       title: "Product deleted",
       description: "The product was removed.",
@@ -133,34 +146,26 @@ export default function AdminDashboardPage() {
         <div className="mx-auto w-full max-w-7xl px-6 py-10 sm:px-8 lg:px-12 lg:py-12">
           {activeView === "dashboard" && <DashboardView />}
 
-          {activeView === "users-all" && <AllUsersView users={users} />}
+          {activeView === "users-all" && (
+            <AllUsersView
+              users={users}
+              onUpdateUser={handleUpdateUser}
+              onDeleteUser={handleDeleteUser}
+            />
+          )}
           {activeView === "users-add" && (
             <AddUserView onAddUser={handleAddUser} />
           )}
-          {activeView === "users-update" && (
-            <UpdateUserView users={users} onUpdateUser={handleUpdateUser} />
-          )}
-          {activeView === "users-delete" && (
-            <DeleteUserView users={users} onDeleteUser={handleDeleteUser} />
-          )}
 
           {activeView === "products-all" && (
-            <AllProductsView products={products} />
+            <AllProductsView
+              products={products}
+              onUpdateProduct={handleUpdateProduct}
+              onDeleteProduct={handleDeleteProduct}
+            />
           )}
           {activeView === "products-add" && (
             <AddProductView onAddProduct={handleAddProduct} />
-          )}
-          {activeView === "products-update" && (
-            <UpdateProductView
-              products={products}
-              onUpdateProduct={handleUpdateProduct}
-            />
-          )}
-          {activeView === "products-delete" && (
-            <DeleteProductView
-              products={products}
-              onDeleteProduct={handleDeleteProduct}
-            />
           )}
         </div>
       </main>

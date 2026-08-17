@@ -1,27 +1,28 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   type UserFormValues,
   userFormDefaults,
   userFormResolver,
 } from "../forms/schema";
 import { FormField, FormSelect } from "../forms/form-fields";
+import { DataTable } from "../data-table/data-table";
+import { createUserColumns } from "../data-table/users-columns";
 import type { AdminUser } from "../data";
 
 function generateId() {
@@ -35,31 +36,30 @@ type UsersViewProps = {
   onDeleteUser: (id: string) => void;
 };
 
-export function AllUsersView({ users }: { users: AdminUser[] }) {
-  const [searchId, setSearchId] = useState("");
+export function AllUsersView({
+  users,
+  onUpdateUser,
+  onDeleteUser,
+}: Pick<UsersViewProps, "users" | "onUpdateUser" | "onDeleteUser">) {
   const [selected, setSelected] = useState<AdminUser | null>(null);
-  console.log(users);
+  const [editUser, setEditUser] = useState<AdminUser | null>(null);
+  const [deleteUser, setDeleteUser] = useState<AdminUser | null>(null);
+
+  const columns = useMemo(
+    () =>
+      createUserColumns({
+        onEdit: (user) => setEditUser(user),
+        onDelete: (user) => setDeleteUser(user),
+      }),
+    [],
+  );
 
   return (
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">All Users</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Search users by ID and view all registered accounts
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="relative sm:max-w-sm">
-          <Input
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Search by user ID..."
-            className="h-10 rounded-lg px-4 pr-8 shadow-sm"
-          />
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Showing {users.length} of {users.length} users
+          Search users, edit their details or remove their account
         </p>
       </div>
 
@@ -79,71 +79,191 @@ export function AllUsersView({ users }: { users: AdminUser[] }) {
         </Card>
       )}
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Created</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow
-                  key={user._id}
-                  onClick={() => setSelected(user)}
-                  className={
-                    selected?._id === user._id
-                      ? "bg-muted/60"
-                      : "cursor-pointer"
-                  }
-                >
-                  <TableCell className="font-mono text-xs text-muted-foreground">
-                    {user._id}
-                  </TableCell>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {user.email}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={user.role === "admin" ? "default" : "secondary"}
-                    >
-                      {user.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {user.createdAt.split("T")[0]}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {users.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    No users found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <DataTable
+        columns={columns}
+        data={users}
+        searchKey="_id"
+        searchPlaceholder="Search by user ID..."
+        resultCountLabel="users"
+        getRowId={(user) => user._id}
+        selectedId={selected?._id}
+        onRowClick={setSelected}
+      />
+
+      <EditUserDialog
+        user={editUser}
+        open={!!editUser}
+        onOpenChange={(open) => {
+          if (!open) setEditUser(null);
+        }}
+        onSave={onUpdateUser}
+      />
+
+      <DeleteUserDialog
+        user={deleteUser}
+        open={!!deleteUser}
+        onOpenChange={(open) => {
+          if (!open) setDeleteUser(null);
+        }}
+        onConfirm={() => {
+          if (deleteUser) onDeleteUser(deleteUser._id);
+        }}
+      />
     </div>
   );
 }
 
-export function AddUserView({
-  onAddUser,
+function EditUserDialog({
+  user,
+  open,
+  onOpenChange,
+  onSave,
 }: {
-  onAddUser: (user: AdminUser) => void;
+  user: AdminUser | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (user: AdminUser) => void;
 }) {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<UserFormValues>({
+    resolver: userFormResolver,
+    defaultValues: userFormDefaults,
+  });
+
+  useEffect(() => {
+    if (open && user) {
+      reset({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      });
+    }
+  }, [open, user, reset]);
+
+  function onSubmit(values: UserFormValues) {
+    if (!user) return;
+    console.log("[Admin] Update User form values:", values, user._id);
+    onSave({
+      ...user,
+      ...values,
+      createdAt: values.createdAt || user.createdAt,
+    });
+    onOpenChange(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit user</DialogTitle>
+          <DialogDescription>
+            Update the details for {user?.name}.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <FormField
+            control={control}
+            name="name"
+            label="Full name"
+            className="sm:col-span-2"
+            inputClassName="h-10"
+          />
+          <FormField
+            control={control}
+            name="email"
+            label="Email"
+            type="email"
+            className="sm:col-span-2"
+            inputClassName="h-10"
+          />
+          <FormSelect
+            control={control}
+            name="role"
+            label="Role"
+            options={[
+              { value: "user", label: "User" },
+              { value: "admin", label: "Admin" },
+            ]}
+            className="sm:col-span-2"
+            inputClassName="h-10"
+          />
+          <FormField
+            control={control}
+            name="createdAt"
+            label="Creation date"
+            type="date"
+            className="sm:col-span-2"
+            inputClassName="h-10"
+          />
+          <DialogFooter className="sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-10 cursor-pointer rounded-lg bg-primary px-6 shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
+            >
+              {isSubmitting ? "Saving..." : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteUserDialog({
+  user,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  user: AdminUser | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete user?</DialogTitle>
+          <DialogDescription>
+            This will permanently remove{" "}
+            <span className="font-medium text-foreground">{user?.email}</span>{" "}
+            from the store. This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              onConfirm();
+              onOpenChange(false);
+            }}
+          >
+            Delete user
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function AddUserView({ onAddUser }: Pick<UsersViewProps, "onAddUser">) {
   const {
     control,
     handleSubmit,
@@ -189,6 +309,7 @@ export function AddUserView({
                 label="Full name"
                 placeholder="e.g. John Doe"
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
@@ -197,6 +318,7 @@ export function AddUserView({
                 type="email"
                 placeholder="user@example.com"
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
               <FormSelect
                 control={control}
@@ -207,6 +329,7 @@ export function AddUserView({
                   { value: "admin", label: "Admin" },
                 ]}
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
               <FormField
                 control={control}
@@ -214,6 +337,7 @@ export function AddUserView({
                 label="Creation date"
                 type="date"
                 className="sm:col-span-2"
+                inputClassName="h-10"
               />
             </div>
 
@@ -227,250 +351,6 @@ export function AddUserView({
           </form>
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-export function UpdateUserView({
-  users,
-  onUpdateUser,
-}: Pick<UsersViewProps, "users" | "onUpdateUser">) {
-  const [searchId, setSearchId] = useState("");
-  const [target, setTarget] = useState<AdminUser | null>(null);
-  const [notFound, setNotFound] = useState(false);
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting },
-  } = useForm<UserFormValues>({
-    resolver: userFormResolver,
-    defaultValues: userFormDefaults,
-  });
-
-  function findUser() {
-    const found = users.find(
-      (u) => u._id.toLowerCase() === searchId.trim().toLowerCase(),
-    );
-    if (found) {
-      setTarget(found);
-      setNotFound(false);
-      reset({
-        name: found.name,
-        email: found.email,
-        role: found.role,
-        createdAt: found.createdAt,
-      });
-    } else {
-      setTarget(null);
-      setNotFound(true);
-    }
-  }
-
-  function onSubmit(values: UserFormValues) {
-    if (!target) return;
-    console.log(
-      "[Admin] Update User form values:",
-      values,
-      "user id:",
-      target._id,
-    );
-    onUpdateUser({
-      ...target,
-      ...values,
-      createdAt: values.createdAt || target.createdAt,
-    });
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Update User</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Find a user by ID, edit their details and save
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Find user</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Input
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter user ID (e.g. u_1a2b3c4d)"
-            className="h-10 rounded-lg px-4 shadow-sm sm:max-w-md"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") findUser();
-            }}
-          />
-          <Button
-            onClick={findUser}
-            className="h-10 cursor-pointer rounded-lg bg-primary px-6 shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
-          >
-            Search
-          </Button>
-          {target && <Badge variant="outline">{target.name}</Badge>}
-          {notFound && (
-            <p className="text-sm font-medium text-destructive">
-              No user found with that ID.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {target && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit “{target.name}”</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <FormField
-                  control={control}
-                  name="name"
-                  label="Full name"
-                  className="sm:col-span-2"
-                />
-                <FormField
-                  control={control}
-                  name="email"
-                  label="Email"
-                  type="email"
-                  className="sm:col-span-2"
-                />
-                <FormSelect
-                  control={control}
-                  name="role"
-                  label="Role"
-                  options={[
-                    { value: "user", label: "User" },
-                    { value: "admin", label: "Admin" },
-                  ]}
-                  className="sm:col-span-2"
-                />
-                <FormField
-                  control={control}
-                  name="createdAt"
-                  label="Creation date"
-                  type="date"
-                  className="sm:col-span-2"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="mt-2 h-10 w-full cursor-pointer bg-gradient-to-r from-primary to-primary/80 text-sm font-semibold shadow-md shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0 sm:w-auto sm:px-8"
-              >
-                {isSubmitting ? "Saving..." : "Save changes"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-export function DeleteUserView({
-  users,
-  onDeleteUser,
-}: Pick<UsersViewProps, "users" | "onDeleteUser">) {
-  const [searchId, setSearchId] = useState("");
-  const [target, setTarget] = useState<AdminUser | null>(null);
-  const [notFound, setNotFound] = useState(false);
-
-  function findUser() {
-    const found = users.find(
-      (u) => u._id.toLowerCase() === searchId.trim().toLowerCase(),
-    );
-    if (found) {
-      setTarget(found);
-      setNotFound(false);
-    } else {
-      setTarget(null);
-      setNotFound(true);
-    }
-  }
-
-  function handleDelete() {
-    if (!target) return;
-    console.log("[Admin] Delete User payload:", {
-      id: target._id,
-      name: target.name,
-    });
-    onDeleteUser(target._id);
-    setTarget(null);
-    setSearchId("");
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Delete User</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Find a user by ID and remove their account
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Find user</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Input
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter user ID (e.g. u_1a2b3c4d)"
-            className="h-10 rounded-lg px-4 shadow-sm sm:max-w-md"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") findUser();
-            }}
-          />
-          <Button
-            onClick={findUser}
-            className="h-10 cursor-pointer rounded-lg bg-primary px-6 shadow-md transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg"
-          >
-            Search
-          </Button>
-          {notFound && (
-            <p className="text-sm font-medium text-destructive">
-              No user found with that ID.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {target && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Delete “{target.name}”?</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <p className="text-sm text-muted-foreground">
-              This will permanently remove{" "}
-              <span className="font-medium text-foreground">
-                {target.email}
-              </span>{" "}
-              from the store. This action cannot be undone.
-            </p>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              className="h-10 w-full cursor-pointer bg-gradient-to-r from-destructive to-destructive/80 text-sm font-semibold shadow-md shadow-destructive/25 transition-all hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 sm:w-auto sm:px-8"
-            >
-              Delete user
-            </Button>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

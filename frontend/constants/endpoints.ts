@@ -13,6 +13,7 @@ const END_POINTS = {
   ADMIN: {
     LOGIN: `${API}/users/login/`,
     USERS: `${API}/admin/users/`,
+    PRODUCTS: `${API}/admin/products/`,
   },
 };
 export default END_POINTS;

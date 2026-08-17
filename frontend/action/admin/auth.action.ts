@@ -1,5 +1,5 @@
 "use server";
-import { getAllUsers, login } from "@/api/admin/auth.api";
+import { getAllProducts, getAllUsers, login } from "@/api/admin/auth.api";
 import { cookies } from "next/headers";
 
 export const loginAction = async (email: string, password: string) => {
@@ -26,4 +26,7 @@ export const loginAction = async (email: string, password: string) => {
 };
 export const getAllUsersAction = async () => {
   return await getAllUsers();
+};
+export const getAllProductsAction = async () => {
+  return await getAllProducts();
 };
