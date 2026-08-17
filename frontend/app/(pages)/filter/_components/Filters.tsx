@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Check } from "lucide-react";
 import {
@@ -39,7 +39,9 @@ export function Filters({ product }: { product: Product[] }) {
 
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);

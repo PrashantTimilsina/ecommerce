@@ -10,5 +10,9 @@ const END_POINTS = {
   CHANGE_PASSWORD: `${API}/users/change-password/`,
   FORGOT_PASSWORD: `${API}/users/forgot-password/`,
   RESET_PASSWORD: `${API}/users/reset-password/`,
+  ADMIN: {
+    LOGIN: `${API}/users/login/`,
+    USERS: `${API}/admin/users/`,
+  },
 };
 export default END_POINTS;

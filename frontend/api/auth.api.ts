@@ -1,6 +1,6 @@
 import END_POINTS from "@/constants/endpoints";
 import { getToken, myFetch } from "@/lib/api";
-type LoginResponse = {
+export type LoginResponse = {
   token: string;
   user: {
     _id: string;
