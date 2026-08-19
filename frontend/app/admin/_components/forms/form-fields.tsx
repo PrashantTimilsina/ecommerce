@@ -9,6 +9,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 type FormFieldProps<T extends FieldValues> = {
@@ -45,6 +46,52 @@ export function FormField<T extends FieldValues>({
             id={name}
             type={type}
             step={step}
+            placeholder={placeholder}
+            {...field}
+            className={cn(
+              fieldState.error ? "border-destructive" : undefined,
+              inputClassName,
+            )}
+          />
+          {fieldState.error && (
+            <p className="mt-1 text-xs font-medium text-destructive">
+              {fieldState.error.message}
+            </p>
+          )}
+        </div>
+      )}
+    />
+  );
+}
+
+type FormTextareaProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: Path<T>;
+  label: string;
+  placeholder?: string;
+  className?: string;
+  inputClassName?: string;
+};
+
+export function FormTextarea<T extends FieldValues>({
+  control,
+  name,
+  label,
+  placeholder,
+  className,
+  inputClassName,
+}: FormTextareaProps<T>) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
+        <div className={className}>
+          <Label htmlFor={name} className="mb-1.5 block text-sm font-medium">
+            {label}
+          </Label>
+          <Textarea
+            id={name}
             placeholder={placeholder}
             {...field}
             className={cn(

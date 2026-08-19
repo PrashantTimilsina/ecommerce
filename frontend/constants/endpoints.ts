@@ -14,6 +14,7 @@ const END_POINTS = {
     LOGIN: `${API}/users/login/`,
     USERS: `${API}/admin/users/`,
     PRODUCTS: `${API}/admin/products/`,
+    PRODUCT: `${API}/admin/product/`,
   },
 };
 export default END_POINTS;

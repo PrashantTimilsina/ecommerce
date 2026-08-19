@@ -1,12 +1,16 @@
 "use server";
 import {
+  addProduct,
   addUser,
+  deleteProduct,
   deleteUser,
   getAllProducts,
   getAllUsers,
   login,
+  updateProduct,
   updateUser,
 } from "@/api/admin/auth.api";
+import type { AdminProduct } from "@/app/admin/_components/data";
 import { cookies } from "next/headers";
 
 export const loginAction = async (email: string, password: string) => {
@@ -31,11 +35,11 @@ export const loginAction = async (email: string, password: string) => {
   }
   return response;
 };
-export const getAllUsersAction = async (search?: string) => {
-  return await getAllUsers(search);
+export const getAllUsersAction = async (search?: string, limit?: number) => {
+  return await getAllUsers(search, limit);
 };
-export const getAllProductsAction = async (search?: string) => {
-  return await getAllProducts(search);
+export const getAllProductsAction = async (search?: string, limit?: number) => {
+  return await getAllProducts(search, limit);
 };
 export const updateUserAction = async (
   userId: string,
@@ -56,4 +60,16 @@ export const addUserAction = async (
   confirmPassword: string,
 ) => {
   return await addUser(name, email, password, role, confirmPassword);
+};
+export const addProductAction = async (product: AdminProduct) => {
+  return await addProduct(product);
+};
+export const updateProductAction = async (
+  id: string,
+  product: Partial<AdminProduct>,
+) => {
+  return await updateProduct(id, product);
+};
+export const deleteProductAction = async (id: string) => {
+  return await deleteProduct(id);
 };

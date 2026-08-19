@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import {
   Area,
   AreaChart,
@@ -16,34 +18,73 @@ import {
 } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { categorySales, dummyProducts, dummyUsers, revenueData } from "../data";
+import { categorySales, revenueData } from "../data";
+import type { AdminProduct, AdminUser } from "../data";
+import {
+  getAllProductsAction,
+  getAllUsersAction,
+} from "@/action/admin/auth.action";
 
 const COLORS = ["#18181b", "#52525b", "#a1a1aa", "#e4e4e7", "#71717a"];
 
-const stats = [
-  {
-    label: "Total Revenue",
-    value: "$245,360",
-    delta: "+12.4%",
-  },
-  {
-    label: "Total Users",
-    value: String(dummyUsers.length),
-    delta: "+8 users",
-  },
-  {
-    label: "Products",
-    value: String(dummyProducts.length),
-    delta: "+3 this week",
-  },
-  {
-    label: "Orders",
-    value: "6,026",
-    delta: "+5.1%",
-  },
-];
-
 export function DashboardView() {
+  const [userCount, setUserCount] = useState(0);
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.allSettled([
+      getAllUsersAction(undefined, 100),
+      getAllProductsAction(undefined, 100),
+    ]).then(([usersResult, productsResult]) => {
+      if (cancelled) return;
+      if (usersResult.status === "fulfilled" && usersResult.value?.status) {
+        setUserCount((usersResult.value.data as AdminUser[]).length);
+      } else {
+        console.error(
+          "Failed to fetch users:",
+          usersResult.status === "rejected" ? usersResult.reason : undefined,
+        );
+      }
+      if (productsResult.status === "fulfilled" && productsResult.value?.status) {
+        setProductCount((productsResult.value.data as AdminProduct[]).length);
+      } else {
+        console.error(
+          "Failed to fetch products:",
+          productsResult.status === "rejected"
+            ? productsResult.reason
+            : undefined,
+        );
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const stats = [
+    {
+      label: "Total Revenue",
+      value: "Rs 245,360",
+      delta: "+12.4%",
+    },
+    {
+      label: "Total Users",
+      value: String(userCount),
+      delta: "registered users",
+    },
+    {
+      label: "Products",
+      value: String(productCount),
+      delta: "in catalog",
+    },
+    {
+      label: "Orders",
+      value: "6,026",
+      delta: "+5.1%",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -130,11 +171,11 @@ export function DashboardView() {
                     tickLine={false}
                     axisLine={false}
                     tick={{ fontSize: 12, fill: "#71717a" }}
-                    tickFormatter={(v) => `$${v / 1000}k`}
+                    tickFormatter={(v) => `Rs ${v / 1000}k`}
                   />
                   <Tooltip
                     formatter={(value) => [
-                      `$${Number(value).toLocaleString()}`,
+                      `Rs ${Number(value).toLocaleString()}`,
                       "Revenue",
                     ]}
                     contentStyle={{

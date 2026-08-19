@@ -26,7 +26,9 @@ export function createProductColumns({
         <div className="flex items-center gap-3">
           <Image
             src={
-              row.original.image ?? "https://picsum.photos/seed/product/100/100"
+              row.original.images?.[0] ??
+              row.original.image ??
+              "https://picsum.photos/seed/product/100/100"
             }
             alt={row.original.title}
             width={36}
@@ -51,7 +53,7 @@ export function createProductColumns({
     helper.accessor("price", {
       header: () => <div className="text-right">Price</div>,
       cell: ({ getValue }) => (
-        <div className="text-right">${getValue().toFixed(2)}</div>
+        <div className="text-right">Rs {getValue().toFixed(2)}</div>
       ),
     }),
     helper.accessor("discount", {
@@ -77,12 +79,6 @@ export function createProductColumns({
             {getValue()}
           </span>
         </div>
-      ),
-    }),
-    helper.accessor("rating", {
-      header: () => <div className="text-right">Rating</div>,
-      cell: ({ getValue }) => (
-        <div className="text-right">{JSON.parse(getValue().toFixed(1))}⭐</div>
       ),
     }),
     helper.display({

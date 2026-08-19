@@ -52,34 +52,65 @@ export const addUserFormResolver = zodResolver(
   addUserFormSchema,
 ) as Resolver<AddUserFormValues>;
 
+export const productCategories = [
+  "Casual",
+  "Formal",
+  "Party",
+  "Gym",
+] as const;
+
 export const productFormSchema = z.object({
   title: z.string().trim().min(2, "Title must be at least 2 characters"),
-  category: z.string().trim().min(1, "Category is required"),
+  category: z.enum(productCategories, { message: "Category is required" }),
+  description: z.string().trim().min(1, "Description is required"),
   price: z.coerce.number().min(0, "Price must be 0 or more"),
   discount: z.coerce
     .number()
     .min(0, "Discount must be 0 or more")
     .max(100, "Discount must be 100 or less"),
   stock: z.coerce.number().min(0, "Stock must be 0 or more"),
-  rating: z.coerce
-    .number()
-    .min(0, "Rating must be 0 or more")
-    .max(5, "Rating must be 5 or less"),
-  status: z.enum(["active", "draft", "archived"]),
+  colors: z.string().trim().min(1, "Add at least one color"),
+  sizes: z.string().trim().min(1, "Add at least one size"),
+  images: z.string().trim().min(1, "Add at least one image URL"),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;
 
 export const productFormDefaults: ProductFormValues = {
   title: "",
-  category: "",
+  category: "Casual",
+  description: "",
   price: 0,
   discount: 0,
   stock: 0,
-  rating: 0,
-  status: "active",
+  colors: "",
+  sizes: "",
+  images: "",
 };
 
 export const productFormResolver = zodResolver(
   productFormSchema,
 ) as Resolver<ProductFormValues>;
+
+export const toCommaString = (values?: string[]) =>
+  values && values.length > 0 ? values.join(", ") : "";
+
+export const fromCommaString = (value: string) =>
+  value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+export function productFormToPayload(values: ProductFormValues) {
+  return {
+    title: values.title,
+    description: values.description,
+    category: values.category,
+    price: values.price,
+    discount: values.discount,
+    stock: values.stock,
+    colors: fromCommaString(values.colors),
+    sizes: fromCommaString(values.sizes),
+    images: fromCommaString(values.images),
+  };
+}

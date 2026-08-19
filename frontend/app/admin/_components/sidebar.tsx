@@ -32,6 +32,14 @@ export type AdminViewId =
   | "products-all"
   | "products-add";
 
+export const adminViewPaths: Record<AdminViewId, string> = {
+  dashboard: "/admin",
+  "users-all": "/admin/users",
+  "users-add": "/admin/users/add",
+  "products-all": "/admin/products",
+  "products-add": "/admin/products/add",
+};
+
 type NavItem = {
   id: AdminViewId;
   label: string;
@@ -87,18 +95,15 @@ function getItemLabel(id: AdminViewId): string {
 
 type AdminSidebarProps = {
   activeView: AdminViewId;
-  onViewChange: (view: AdminViewId) => void;
 };
 
 type SidebarContentProps = {
   activeView: AdminViewId;
-  onViewChange: (view: AdminViewId) => void;
   onNavigate?: () => void;
 };
 
 function SidebarContent({
   activeView,
-  onViewChange,
   onNavigate,
 }: SidebarContentProps) {
   const router = useRouter();
@@ -119,7 +124,7 @@ function SidebarContent({
   }
 
   function handleViewChange(view: AdminViewId) {
-    onViewChange(view);
+    router.push(adminViewPaths[view]);
     onNavigate?.();
   }
 
@@ -221,18 +226,15 @@ function SidebarContent({
   );
 }
 
-export function AdminSidebar({ activeView, onViewChange }: AdminSidebarProps) {
+export function AdminSidebar({ activeView }: AdminSidebarProps) {
   return (
     <aside className="flex h-full w-60 shrink-0 flex-col border-r border-border bg-card">
-      <SidebarContent activeView={activeView} onViewChange={onViewChange} />
+      <SidebarContent activeView={activeView} />
     </aside>
   );
 }
 
-export function AdminMobileSidebar({
-  activeView,
-  onViewChange,
-}: AdminSidebarProps) {
+export function AdminMobileSidebar({ activeView }: AdminSidebarProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -253,7 +255,6 @@ export function AdminMobileSidebar({
         <SheetTitle className="sr-only">Admin Menu</SheetTitle>
         <SidebarContent
           activeView={activeView}
-          onViewChange={onViewChange}
           onNavigate={() => setOpen(false)}
         />
       </SheetContent>

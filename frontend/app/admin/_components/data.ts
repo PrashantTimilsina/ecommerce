@@ -10,7 +10,6 @@ export type AdminProduct = {
   _id?: string;
   discount: number;
   numReviews?: number;
-  status?: "active" | "draft" | "archived";
   createdAt?: string;
   image?: string;
   title: string;
@@ -18,9 +17,12 @@ export type AdminProduct = {
   price: number;
 
   stock: number;
-  rating: number;
+  rating?: number;
 
   images?: string[];
+  colors?: string[];
+  sizes?: string[];
+  description?: string;
 };
 
 export const dummyUsers: AdminUser[] = [
@@ -90,9 +92,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 24.99,
     discount: 10,
     stock: 120,
-    rating: 4.5,
+    
     numReviews: 210,
-    status: "active",
+    
     createdAt: "2024-01-15",
     image: "https://picsum.photos/seed/tshirt/100/100",
   },
@@ -103,9 +105,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 59.99,
     discount: 20,
     stock: 45,
-    rating: 4.2,
+    
     numReviews: 132,
-    status: "active",
+    
     createdAt: "2024-02-02",
     image: "https://picsum.photos/seed/jeans/100/100",
   },
@@ -116,9 +118,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 149.99,
     discount: 0,
     stock: 18,
-    rating: 4.8,
+    
     numReviews: 89,
-    status: "active",
+    
     createdAt: "2023-12-20",
     image: "https://picsum.photos/seed/jacket/100/100",
   },
@@ -129,9 +131,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 189.99,
     discount: 25,
     stock: 9,
-    rating: 4.7,
+    
     numReviews: 54,
-    status: "draft",
+    
     createdAt: "2024-03-11",
     image: "https://picsum.photos/seed/coat/100/100",
   },
@@ -142,9 +144,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 79.99,
     discount: 15,
     stock: 66,
-    rating: 4.4,
+    
     numReviews: 301,
-    status: "active",
+    
     createdAt: "2024-02-28",
     image: "https://picsum.photos/seed/shoes/100/100",
   },
@@ -155,9 +157,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 19.99,
     discount: 5,
     stock: 200,
-    rating: 4.0,
+    
     numReviews: 77,
-    status: "active",
+    
     createdAt: "2024-04-09",
     image: "https://picsum.photos/seed/bag/100/100",
   },
@@ -168,9 +170,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 45.0,
     discount: 0,
     stock: 34,
-    rating: 3.9,
+    
     numReviews: 45,
-    status: "archived",
+    
     createdAt: "2023-10-03",
     image: "https://picsum.photos/seed/sunglasses/100/100",
   },
@@ -181,9 +183,9 @@ export const dummyProducts: AdminProduct[] = [
     price: 14.99,
     discount: 30,
     stock: 0,
-    rating: 4.1,
+    
     numReviews: 63,
-    status: "draft",
+    
     createdAt: "2024-05-17",
     image: "https://picsum.photos/seed/beanie/100/100",
   },

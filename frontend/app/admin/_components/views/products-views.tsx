@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,17 +17,21 @@ import {
 } from "@/components/ui/dialog";
 import {
   type ProductFormValues,
+  productCategories,
   productFormDefaults,
   productFormResolver,
+  productFormToPayload,
+  toCommaString,
 } from "../forms/schema";
-import { FormField, FormSelect } from "../forms/form-fields";
+import { FormField, FormSelect, FormTextarea } from "../forms/form-fields";
 import { DataTable } from "../data-table/data-table";
 import { createProductColumns } from "../data-table/products-columns";
+import {
+  addProductAction,
+  deleteProductAction,
+  updateProductAction,
+} from "@/action/admin/auth.action";
 import type { AdminProduct } from "../data";
-
-function generateId() {
-  return `p_${Math.random().toString(36).slice(2, 10)}`;
-}
 
 type ProductsViewProps = {
   products: AdminProduct[];
@@ -124,21 +129,44 @@ function EditProductDialog({
     if (open && product) {
       reset({
         title: product.title,
-        category: product.category,
+        category: product.category as ProductFormValues["category"],
+        description: product.description ?? "",
         price: product.price,
         discount: product.discount,
         stock: product.stock,
-        rating: product.rating,
-        status: product.status,
+        colors: toCommaString(product.colors),
+        sizes: toCommaString(product.sizes),
+        images: toCommaString(product.images),
       });
     }
   }, [open, product, reset]);
 
-  function onSubmit(values: ProductFormValues) {
-    if (!product) return;
-    console.log("[Admin] Update Product form values:", values, product._id);
-    onSave({ ...product, ...values });
-    onOpenChange(false);
+  async function onSubmit(values: ProductFormValues) {
+    if (!product?._id) return;
+    try {
+      const response = await updateProductAction(
+        product._id,
+        productFormToPayload(values),
+      );
+      console.log(response);
+      if (response?.status) {
+        onSave({ ...product, ...productFormToPayload(values) });
+        onOpenChange(false);
+      } else {
+        toast.add({
+          title: "Update failed",
+          description: response?.message ?? "Could not update product.",
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("[Admin] Failed to update product:", error);
+      toast.add({
+        title: "Update failed",
+        description: "Could not update product.",
+        type: "error",
+      });
+    }
   }
 
   return (
@@ -159,18 +187,27 @@ function EditProductDialog({
               className="sm:col-span-2"
               inputClassName="h-10"
             />
-            <FormField
+            <FormTextarea
+              control={control}
+              name="description"
+              label="Description"
+              placeholder="Product description"
+              className="sm:col-span-2"
+            />
+            <FormSelect
               control={control}
               name="category"
               label="Category"
-              placeholder="e.g. T-Shirts"
-              className="sm:col-span-2"
+              options={productCategories.map((category) => ({
+                value: category,
+                label: category,
+              }))}
               inputClassName="h-10"
             />
             <FormField
               control={control}
               name="price"
-              label="Price ($)"
+              label="Price (Rs)"
               type="number"
               step="0.01"
               inputClassName="h-10"
@@ -191,21 +228,25 @@ function EditProductDialog({
             />
             <FormField
               control={control}
-              name="rating"
-              label="Rating"
-              type="number"
-              step="0.1"
+              name="colors"
+              label="Colors (comma separated)"
+              placeholder="e.g. Black, White, Blue"
+              className="sm:col-span-2"
               inputClassName="h-10"
             />
-            <FormSelect
+            <FormField
               control={control}
-              name="status"
-              label="Status"
-              options={[
-                { value: "active", label: "Active" },
-                { value: "draft", label: "Draft" },
-                { value: "archived", label: "Archived" },
-              ]}
+              name="sizes"
+              label="Sizes (comma separated)"
+              placeholder="e.g. S, M, L, XL"
+              className="sm:col-span-2"
+              inputClassName="h-10"
+            />
+            <FormField
+              control={control}
+              name="images"
+              label="Image URLs (comma separated)"
+              placeholder="https://example.com/image.jpg"
               className="sm:col-span-2"
               inputClassName="h-10"
             />
@@ -243,6 +284,35 @@ function DeleteProductDialog({
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
 }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleDelete() {
+    if (!product?._id) return;
+    setIsDeleting(true);
+    try {
+      const response = await deleteProductAction(product._id);
+      if (response?.status) {
+        onConfirm();
+        onOpenChange(false);
+      } else {
+        toast.add({
+          title: "Delete failed",
+          description: response?.message ?? "Could not delete product.",
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("[Admin] Failed to delete product:", error);
+      toast.add({
+        title: "Delete failed",
+        description: "Could not delete product.",
+        type: "error",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -262,12 +332,10 @@ function DeleteProductDialog({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {
-              onConfirm();
-              onOpenChange(false);
-            }}
+            disabled={isDeleting}
+            onClick={handleDelete}
           >
-            Delete product
+            {isDeleting ? "Deleting..." : "Delete product"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -288,16 +356,27 @@ export function AddProductView({
     defaultValues: productFormDefaults,
   });
 
-  function onSubmit(values: ProductFormValues) {
-    console.log("[Admin] Add Product form values:", values);
-    onAddProduct({
-      _id: generateId(),
-      ...values,
-      numReviews: 0,
-      createdAt: new Date().toISOString().slice(0, 10),
-      image: `https://picsum.photos/seed/${Math.random().toString(36).slice(2, 8)}/100/100`,
-    });
-    reset(productFormDefaults);
+  async function onSubmit(values: ProductFormValues) {
+    try {
+      const response = await addProductAction(productFormToPayload(values));
+      if (response?.status) {
+        onAddProduct(response.data as AdminProduct);
+        reset(productFormDefaults);
+      } else {
+        toast.add({
+          title: "Add failed",
+          description: response?.message ?? "Could not add product.",
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("[Admin] Failed to add product:", error);
+      toast.add({
+        title: "Add failed",
+        description: "Could not add product.",
+        type: "error",
+      });
+    }
   }
 
   return (
@@ -327,18 +406,27 @@ export function AddProductView({
                 className="sm:col-span-2"
                 inputClassName="h-10"
               />
-              <FormField
+              <FormTextarea
+                control={control}
+                name="description"
+                label="Description"
+                placeholder="Product description"
+                className="sm:col-span-2"
+              />
+              <FormSelect
                 control={control}
                 name="category"
                 label="Category"
-                placeholder="e.g. T-Shirts"
-                className="sm:col-span-2"
+                options={productCategories.map((category) => ({
+                  value: category,
+                  label: category,
+                }))}
                 inputClassName="h-10"
               />
               <FormField
                 control={control}
                 name="price"
-                label="Price ($)"
+                label="Price (Rs)"
                 type="number"
                 step="0.01"
                 inputClassName="h-10"
@@ -360,21 +448,25 @@ export function AddProductView({
               />
               <FormField
                 control={control}
-                name="rating"
-                label="Rating"
-                type="number"
-                step="0.1"
+                name="colors"
+                label="Colors (comma separated)"
+                placeholder="e.g. Black, White, Blue"
+                className="sm:col-span-2"
                 inputClassName="h-10"
               />
-              <FormSelect
+              <FormField
                 control={control}
-                name="status"
-                label="Status"
-                options={[
-                  { value: "active", label: "Active" },
-                  { value: "draft", label: "Draft" },
-                  { value: "archived", label: "Archived" },
-                ]}
+                name="sizes"
+                label="Sizes (comma separated)"
+                placeholder="e.g. S, M, L, XL"
+                className="sm:col-span-2"
+                inputClassName="h-10"
+              />
+              <FormField
+                control={control}
+                name="images"
+                label="Image URLs (comma separated)"
+                placeholder="https://example.com/image.jpg"
                 className="sm:col-span-2"
                 inputClassName="h-10"
               />

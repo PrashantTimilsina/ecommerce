@@ -1,6 +1,8 @@
 import END_POINTS from "@/constants/endpoints";
 import { getToken, myFetch } from "@/lib/api";
+import type { AdminProduct } from "@/app/admin/_components/data";
 import { LoginResponse } from "../auth.api";
+import { revalidatePath } from "next/cache";
 
 export const login = async (email: string, password: string) => {
   const response = await myFetch<LoginResponse>(`${END_POINTS.ADMIN.LOGIN}`, {
@@ -12,11 +14,13 @@ export const login = async (email: string, password: string) => {
   });
   return response;
 };
-export const getAllUsers = async (search?: string) => {
+export const getAllUsers = async (search?: string, limit?: number) => {
   const token = await getToken();
-  const url = search
-    ? `${END_POINTS.ADMIN.USERS}?search=${encodeURIComponent(search)}`
-    : END_POINTS.ADMIN.USERS;
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (limit) params.set("limit", String(limit));
+  const queryString = params.toString();
+  const url = queryString ? `${END_POINTS.ADMIN.USERS}?${queryString}` : END_POINTS.ADMIN.USERS;
   const response = await myFetch(url, {
     headers: {
       "Content-Type": "application/json",
@@ -25,10 +29,14 @@ export const getAllUsers = async (search?: string) => {
   });
   return response;
 };
-export const getAllProducts = async (search?: string) => {
+export const getAllProducts = async (search?: string, limit?: number) => {
   const token = await getToken();
-  const url = search
-    ? `${END_POINTS.ADMIN.PRODUCTS}?search=${encodeURIComponent(search)}`
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (limit) params.set("limit", String(limit));
+  const queryString = params.toString();
+  const url = queryString
+    ? `${END_POINTS.ADMIN.PRODUCTS}?${queryString}`
     : END_POINTS.ADMIN.PRODUCTS;
   const response = await myFetch(url, {
     headers: {
@@ -82,6 +90,47 @@ export const addUser = async (
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ name, email, password, role, confirmPassword }),
+  });
+  return response;
+};
+export const addProduct = async (product: AdminProduct) => {
+  const token = await getToken();
+  const response = await myFetch(END_POINTS.ADMIN.PRODUCTS, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(product),
+  });
+  return response;
+};
+export const updateProduct = async (
+  id: string,
+  product: Partial<AdminProduct>,
+) => {
+  const token = await getToken();
+  const response = await myFetch(`${END_POINTS.ADMIN.PRODUCT}${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(product),
+  });
+  if (response.status) {
+    revalidatePath("/admin/products");
+  }
+  return response;
+};
+export const deleteProduct = async (id: string) => {
+  const token = await getToken();
+  const response = await myFetch(`${END_POINTS.ADMIN.PRODUCT}${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response;
 };

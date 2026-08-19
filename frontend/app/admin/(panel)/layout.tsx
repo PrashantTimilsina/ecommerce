@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { AdminShell } from "./admin-shell";
 
 export default async function AdminPanelLayout({
   children,
@@ -11,5 +12,5 @@ export default async function AdminPanelLayout({
   if (!token) {
     redirect("/admin/login");
   }
-  return <>{children}</>;
+  return <AdminShell>{children}</AdminShell>;
 }
