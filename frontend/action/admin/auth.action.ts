@@ -1,5 +1,12 @@
 "use server";
-import { getAllProducts, getAllUsers, login } from "@/api/admin/auth.api";
+import {
+  addUser,
+  deleteUser,
+  getAllProducts,
+  getAllUsers,
+  login,
+  updateUser,
+} from "@/api/admin/auth.api";
 import { cookies } from "next/headers";
 
 export const loginAction = async (email: string, password: string) => {
@@ -24,9 +31,29 @@ export const loginAction = async (email: string, password: string) => {
   }
   return response;
 };
-export const getAllUsersAction = async () => {
-  return await getAllUsers();
+export const getAllUsersAction = async (search?: string) => {
+  return await getAllUsers(search);
 };
-export const getAllProductsAction = async () => {
-  return await getAllProducts();
+export const getAllProductsAction = async (search?: string) => {
+  return await getAllProducts(search);
+};
+export const updateUserAction = async (
+  userId: string,
+  email: string,
+  role: string,
+  name: string,
+) => {
+  return await updateUser(userId, email, role, name);
+};
+export const deleteUserAction = async (userId: string) => {
+  return await deleteUser(userId);
+};
+export const addUserAction = async (
+  name: string,
+  email: string,
+  password: string,
+  role: string,
+  confirmPassword: string,
+) => {
+  return await addUser(name, email, password, role, confirmPassword);
 };

@@ -24,6 +24,69 @@ export const getUserById = catchAsync(async (req, res) => {
   }
   return res.status(200).json({ status: true, data: user });
 });
+export const createUser = catchAsync(async (req, res) => {
+  const { name, email, password, confirmPassword, role } = req.body;
+  if (!name || !email || !password || !confirmPassword || !role) {
+    return res.status(400).json({
+      status: false,
+      message:
+        "Name, email, password,role and password confirmation are required",
+    });
+  }
+  if (password !== confirmPassword) {
+    return res.status(400).json({
+      status: false,
+      message: "Passwords do not match",
+    });
+  }
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res
+      .status(400)
+      .json({ status: false, message: "User with this email already exists" });
+  }
+  const user = await User.create({
+    name,
+    email,
+    password,
+    role,
+    confirmPassword,
+  });
+  return res.status(201).json({ status: true, data: user });
+});
+export const updateUser = catchAsync(async (req, res) => {
+  const { userId, name, email, role } = req.body;
+  if (!userId || !name || !email || !role) {
+    return res.status(400).json({
+      status: false,
+      message: "User ID, name, email, and role are required",
+    });
+  }
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ status: false, message: "User not found" });
+  }
+  user.name = name;
+  user.email = email;
+  user.role = role;
+  await user.save();
+  return res.status(200).json({ status: true, data: user });
+});
+export const deleteUser = catchAsync(async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ status: false, message: "User ID is required" });
+  }
+  const user = await User.findByIdAndDelete(userId);
+  if (!user) {
+    return res.status(404).json({ status: false, message: "User not found" });
+  }
+  return res
+    .status(200)
+    .json({ status: true, message: "User deleted successfully" });
+});
 export const createProduct = catchAsync(async (req, res) => {
   const { title, description, price, stock, category, images, colors, sizes } =
     req.body;

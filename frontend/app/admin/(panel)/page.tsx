@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 
@@ -22,22 +23,16 @@ import {
 } from "@/action/admin/auth.action";
 
 export default function AdminDashboardPage() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") ?? "";
   const [activeView, setActiveView] = useState<AdminViewId>("dashboard");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [products, setProducts] = useState<AdminProduct[]>([]);
-  // useEffect(() => {
-  //   async function fetchAllUsers() {
-  //     const response = await getAllUsersAction();
-
-  //     setUsers(response.data as AdminUser[]);
-  //   }
-  //   fetchAllUsers();
-  // }, []);
   useEffect(() => {
     async function fetchData() {
       const [usersResult, productsResult] = await Promise.allSettled([
-        getAllUsersAction(),
-        getAllProductsAction(), // replace with your actual second action
+        getAllUsersAction(search),
+        getAllProductsAction(search),
       ]);
 
       if (usersResult.status === "fulfilled") {
@@ -54,7 +49,7 @@ export default function AdminDashboardPage() {
     }
 
     fetchData();
-  }, []);
+  }, [search]);
 
   function handleAddUser(user: AdminUser) {
     console.log("[Admin] Add User payload:", user);

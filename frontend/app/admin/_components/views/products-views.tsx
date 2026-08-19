@@ -69,7 +69,7 @@ export function AllProductsView({
         columns={columns}
         data={products}
         searchKey="product"
-        searchPlaceholder="Search by product ID or title..."
+        searchPlaceholder="Search products by title or category..."
         resultCountLabel="products"
         getRowId={(product) => product._id ?? ""}
         selectedId={selected?._id}

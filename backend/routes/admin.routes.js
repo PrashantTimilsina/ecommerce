@@ -11,11 +11,14 @@ router.get(
 
   adminController.getUserById,
 );
+router.post("/users", adminController.updateUser);
+router.delete("/users", adminController.deleteUser);
 router.get(
   "/products",
 
   productController.getAllProducts,
 );
+router.post("/users/add", adminController.createUser);
 router.post(
   "/products",
 

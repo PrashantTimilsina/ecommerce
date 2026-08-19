@@ -6,24 +6,14 @@ import {
   type ColumnDef,
   type ColumnFiltersState,
   type ColumnVisibilityState,
-  type ReactTable,
   type RowData,
   type SortingState,
 } from "@tanstack/react-table";
-import { Settings2 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -34,46 +24,6 @@ import {
 } from "@/components/ui/table";
 
 import { features, type DataTableFeatures } from "./data-table-features";
-
-function DataTableViewOptions<TData extends RowData>({
-  table,
-}: {
-  table: ReactTable<DataTableFeatures, TData>;
-}) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto hidden h-8 lg:flex"
-          >
-            <Settings2 />
-            View
-          </Button>
-        }
-      />
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {table
-          .getAllColumns()
-          .filter((column) => column.getCanHide())
-          .map((column) => (
-            <DropdownMenuCheckboxItem
-              key={column.id}
-              className="capitalize"
-              checked={column.getIsVisible()}
-              onCheckedChange={(value) => column.toggleVisibility(!!value)}
-            >
-              {column.id}
-            </DropdownMenuCheckboxItem>
-          ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
 
 interface DataTableProps<TData extends RowData> {
   columns: ColumnDef<DataTableFeatures, TData>[];
@@ -98,6 +48,14 @@ export function DataTable<TData extends RowData>({
   selectedId,
   onRowClick,
 }: DataTableProps<TData>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [search, setSearch] = React.useState(
+    searchParams.get("search") ?? "",
+  );
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -116,27 +74,46 @@ export function DataTable<TData extends RowData>({
     onColumnVisibilityChange: setColumnVisibility,
   });
 
-  const searchColumn = searchKey ? table.getColumn(searchKey) : undefined;
   const filteredCount = table.getFilteredRowModel().rows.length;
+
+  const searchTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (searchTimer.current) clearTimeout(searchTimer.current);
+    };
+  }, []);
+
+  function handleSearchChange(value: string) {
+    setSearch(value);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set("search", value);
+      } else {
+        params.delete("search");
+      }
+      const queryString = params.toString();
+      router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+    }, 300);
+  }
 
   return (
     <Card>
       <CardContent className="p-0">
         <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center">
-          {searchColumn && (
+          {searchKey && (
             <Input
               placeholder={searchPlaceholder}
-              value={(searchColumn.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                searchColumn.setFilterValue(event.target.value)
-              }
+              value={search}
+              onChange={(event) => handleSearchChange(event.target.value)}
               className="h-10 max-w-sm rounded-lg px-4 shadow-sm"
             />
           )}
           <p className="text-xs text-muted-foreground">
             Showing {filteredCount} of {data.length} {resultCountLabel}
           </p>
-          <DataTableViewOptions table={table} />
         </div>
 
         <div className="overflow-x-auto">

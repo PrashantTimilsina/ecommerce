@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,6 +17,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  type AddUserFormValues,
+  addUserFormDefaults,
+  addUserFormResolver,
   type UserFormValues,
   userFormDefaults,
   userFormResolver,
@@ -23,11 +27,12 @@ import {
 import { FormField, FormSelect } from "../forms/form-fields";
 import { DataTable } from "../data-table/data-table";
 import { createUserColumns } from "../data-table/users-columns";
+import {
+  addUserAction,
+  deleteUserAction,
+  updateUserAction,
+} from "@/action/admin/auth.action";
 import type { AdminUser } from "../data";
-
-function generateId() {
-  return `u_${Math.random().toString(36).slice(2, 10)}`;
-}
 
 type UsersViewProps = {
   users: AdminUser[];
@@ -63,27 +68,11 @@ export function AllUsersView({
         </p>
       </div>
 
-      {selected && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Selected user</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-            <Badge variant="outline" className="font-mono">
-              {selected._id}
-            </Badge>
-            <span className="font-medium text-foreground">{selected.name}</span>
-            <span>·</span>
-            <span>{selected.email}</span>
-          </CardContent>
-        </Card>
-      )}
-
       <DataTable
         columns={columns}
         data={users}
         searchKey="_id"
-        searchPlaceholder="Search by user ID..."
+        searchPlaceholder="Search users by name or email..."
         resultCountLabel="users"
         getRowId={(user) => user._id}
         selectedId={selected?._id}
@@ -128,6 +117,7 @@ function EditUserDialog({
     control,
     handleSubmit,
     reset,
+    register,
     formState: { isSubmitting },
   } = useForm<UserFormValues>({
     resolver: userFormResolver,
@@ -145,15 +135,38 @@ function EditUserDialog({
     }
   }, [open, user, reset]);
 
-  function onSubmit(values: UserFormValues) {
+  async function onSubmit(values: UserFormValues) {
     if (!user) return;
-    console.log("[Admin] Update User form values:", values, user._id);
-    onSave({
-      ...user,
-      ...values,
-      createdAt: values.createdAt || user.createdAt,
-    });
-    onOpenChange(false);
+    try {
+      const response = await updateUserAction(
+        user._id,
+        values.email,
+        values.role,
+        values.name,
+      );
+      if (response?.status) {
+        onSave({
+          ...user,
+          name: values.name,
+          email: values.email,
+          role: values.role,
+        });
+        onOpenChange(false);
+      } else {
+        toast.add({
+          title: "Update failed",
+          description: response?.message ?? "Could not update user.",
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("[Admin] Failed to update user:", error);
+      toast.add({
+        title: "Update failed",
+        description: "Could not update user.",
+        type: "error",
+      });
+    }
   }
 
   return (
@@ -192,14 +205,7 @@ function EditUserDialog({
             className="sm:col-span-2"
             inputClassName="h-10"
           />
-          <FormField
-            control={control}
-            name="createdAt"
-            label="Creation date"
-            type="date"
-            className="sm:col-span-2"
-            inputClassName="h-10"
-          />
+          <input type="hidden" {...register("createdAt")} />
           <DialogFooter className="sm:justify-end">
             <Button
               type="button"
@@ -233,6 +239,35 @@ function DeleteUserDialog({
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
 }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleDelete() {
+    if (!user) return;
+    setIsDeleting(true);
+    try {
+      const response = await deleteUserAction(user._id);
+      if (response?.status) {
+        onConfirm();
+        onOpenChange(false);
+      } else {
+        toast.add({
+          title: "Delete failed",
+          description: response?.message ?? "Could not delete user.",
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("[Admin] Failed to delete user:", error);
+      toast.add({
+        title: "Delete failed",
+        description: "Could not delete user.",
+        type: "error",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -250,12 +285,10 @@ function DeleteUserDialog({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {
-              onConfirm();
-              onOpenChange(false);
-            }}
+            disabled={isDeleting}
+            onClick={handleDelete}
           >
-            Delete user
+            {isDeleting ? "Deleting..." : "Delete user"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -269,19 +302,39 @@ export function AddUserView({ onAddUser }: Pick<UsersViewProps, "onAddUser">) {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<UserFormValues>({
-    resolver: userFormResolver,
-    defaultValues: userFormDefaults,
+  } = useForm<AddUserFormValues>({
+    resolver: addUserFormResolver,
+    defaultValues: addUserFormDefaults,
   });
 
-  function onSubmit(values: UserFormValues) {
-    console.log("[Admin] Add User form values:", values);
-    onAddUser({
-      _id: generateId(),
-      ...values,
-      createdAt: values.createdAt || new Date().toISOString(),
-    });
-    reset(userFormDefaults);
+  async function onSubmit(values: AddUserFormValues) {
+    try {
+      const response = await addUserAction(
+        values.name,
+        values.email,
+        values.password,
+        values.role,
+        values.confirmPassword,
+      );
+      console.log(response);
+      if (response?.status) {
+        onAddUser(response.data as AdminUser);
+        reset(addUserFormDefaults);
+      } else {
+        toast.add({
+          title: "Add failed",
+          description: response?.message ?? "Could not add user.",
+          type: "error",
+        });
+      }
+    } catch (error) {
+      console.error("[Admin] Failed to add user:", error);
+      toast.add({
+        title: "Add failed",
+        description: "Could not add user.",
+        type: "error",
+      });
+    }
   }
 
   return (
@@ -320,6 +373,22 @@ export function AddUserView({ onAddUser }: Pick<UsersViewProps, "onAddUser">) {
                 className="sm:col-span-2"
                 inputClassName="h-10"
               />
+              <FormField
+                control={control}
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="••••••••"
+                inputClassName="h-10"
+              />
+              <FormField
+                control={control}
+                name="confirmPassword"
+                label="Confirm password"
+                type="password"
+                placeholder="••••••••"
+                inputClassName="h-10"
+              />
               <FormSelect
                 control={control}
                 name="role"
@@ -328,14 +397,6 @@ export function AddUserView({ onAddUser }: Pick<UsersViewProps, "onAddUser">) {
                   { value: "user", label: "User" },
                   { value: "admin", label: "Admin" },
                 ]}
-                className="sm:col-span-2"
-                inputClassName="h-10"
-              />
-              <FormField
-                control={control}
-                name="createdAt"
-                label="Creation date"
-                type="date"
                 className="sm:col-span-2"
                 inputClassName="h-10"
               />
