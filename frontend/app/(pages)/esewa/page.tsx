@@ -1,9 +1,23 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Loader2, ShieldCheck, Wallet } from "lucide-react";
 
-export default function EsewaPayment() {
+export default function EsewaPaymentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white flex items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
+      }
+    >
+      <EsewaPayment />
+    </Suspense>
+  );
+}
+
+function EsewaPayment() {
   const searchParams = useSearchParams();
   const total = searchParams.get("total") as string;
 

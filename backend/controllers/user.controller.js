@@ -92,20 +92,20 @@ export const addToCart = catchAsync(async (req, res) => {
     return res.status(404).json({ status: false, message: "User not found" });
   }
   const productItem = await Product.findOne({ title: product });
+  if (!productItem) {
+    return res
+      .status(404)
+      .json({ status: false, message: "Product not found" });
+  }
   if (numberQuantity > productItem.stock) {
     return res.status(400).json({
       status: false,
       message: "Insufficient stock",
     });
   }
-  if (!productItem) {
-    return res
-      .status(404)
-      .json({ status: false, message: "Product not found" });
-  }
   const existingCartItem = user.cartItems.find(
     (item) =>
-      item.product.toString() === product &&
+      item.product.toString() === productItem._id.toString() &&
       item.size === size &&
       item.color === color,
   );

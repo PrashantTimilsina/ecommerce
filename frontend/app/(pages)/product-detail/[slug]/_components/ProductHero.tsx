@@ -69,6 +69,11 @@ function ProductHero({ product }: { product: Product }) {
         title: "Product added to cart successfully",
         type: "success",
       });
+    } else {
+      toast.add({
+        title: response.message || "Failed to add to cart",
+        type: "error",
+      });
     }
   }
 
