@@ -5,7 +5,11 @@
     "price": 2499,
     "discount": 10,
     "category": "Casual",
-    "images": ["https://loremflickr.com/600/600/hoodie"],
+    "images": [
+      "https://loremflickr.com/600/600/hoodie?lock=101",
+      "https://loremflickr.com/600/600/hoodie?lock=102",
+      "https://loremflickr.com/600/600/hoodie?lock=103"
+    ],
     "colors": ["#000000", "#808080", "#000080"],
     "sizes": ["S", "M", "L", "XL"],
     "stock": 50
@@ -16,7 +20,11 @@
     "price": 1899,
     "discount": 0,
     "category": "Formal",
-    "images": ["https://loremflickr.com/600/600/formalshirt"],
+    "images": [
+      "https://loremflickr.com/600/600/formalshirt?lock=104",
+      "https://loremflickr.com/600/600/formalshirt?lock=105",
+      "https://loremflickr.com/600/600/formalshirt?lock=106"
+    ],
     "colors": ["#FFFFFF", "#87CEEB"],
     "sizes": ["S", "M", "L", "XL", "XXL"],
     "stock": 30
@@ -27,7 +35,11 @@
     "price": 3299,
     "discount": 15,
     "category": "Party",
-    "images": ["https://loremflickr.com/600/600/partydress"],
+    "images": [
+      "https://loremflickr.com/600/600/partydress?lock=107",
+      "https://loremflickr.com/600/600/partydress?lock=108",
+      "https://loremflickr.com/600/600/partydress?lock=109"
+    ],
     "colors": ["#D4AF37", "#000000"],
     "sizes": ["XS", "S", "M", "L"],
     "stock": 20
@@ -38,7 +50,11 @@
     "price": 999,
     "discount": 5,
     "category": "Gym",
-    "images": ["https://loremflickr.com/600/600/tanktop"],
+    "images": [
+      "https://loremflickr.com/600/600/tanktop?lock=110",
+      "https://loremflickr.com/600/600/tanktop?lock=111",
+      "https://loremflickr.com/600/600/tanktop?lock=112"
+    ],
     "colors": ["#000000", "#FF0000", "#FFFFFF"],
     "sizes": ["S", "M", "L", "XL"],
     "stock": 75
@@ -49,7 +65,11 @@
     "price": 3599,
     "discount": 0,
     "category": "Casual",
-    "images": ["https://loremflickr.com/600/600/denimjacket"],
+    "images": [
+      "https://loremflickr.com/600/600/denimjacket?lock=113",
+      "https://loremflickr.com/600/600/denimjacket?lock=114",
+      "https://loremflickr.com/600/600/denimjacket?lock=115"
+    ],
     "colors": ["#4169A1", "#1C2841"],
     "sizes": ["S", "M", "L", "XL"],
     "stock": 40
@@ -60,7 +80,11 @@
     "price": 5499,
     "discount": 20,
     "category": "Formal",
-    "images": ["https://loremflickr.com/600/600/blazer"],
+    "images": [
+      "https://loremflickr.com/600/600/blazer?lock=116",
+      "https://loremflickr.com/600/600/blazer?lock=117",
+      "https://loremflickr.com/600/600/blazer?lock=118"
+    ],
     "colors": ["#1C1C1C", "#5C4033"],
     "sizes": ["S", "M", "L", "XL"],
     "stock": 15
@@ -71,7 +95,11 @@
     "price": 1799,
     "discount": 10,
     "category": "Party",
-    "images": ["https://loremflickr.com/600/600/cocktailtop"],
+    "images": [
+      "https://loremflickr.com/600/600/cocktailtop?lock=119",
+      "https://loremflickr.com/600/600/cocktailtop?lock=120",
+      "https://loremflickr.com/600/600/cocktailtop?lock=121"
+    ],
     "colors": ["#C0C0C0", "#B87333"],
     "sizes": ["XS", "S", "M"],
     "stock": 25
@@ -82,7 +110,11 @@
     "price": 1299,
     "discount": 0,
     "category": "Gym",
-    "images": ["https://loremflickr.com/600/600/leggings"],
+    "images": [
+      "https://loremflickr.com/600/600/leggings?lock=122",
+      "https://loremflickr.com/600/600/leggings?lock=123",
+      "https://loremflickr.com/600/600/leggings?lock=124"
+    ],
     "colors": ["#000000", "#2F4F4F"],
     "sizes": ["XS", "S", "M", "L"],
     "stock": 60
@@ -93,7 +125,11 @@
     "price": 1599,
     "discount": 5,
     "category": "Casual",
-    "images": ["https://loremflickr.com/600/600/joggers"],
+    "images": [
+      "https://loremflickr.com/600/600/joggers?lock=125",
+      "https://loremflickr.com/600/600/joggers?lock=126",
+      "https://loremflickr.com/600/600/joggers?lock=127"
+    ],
     "colors": ["#808080", "#000000", "#6B8E23"],
     "sizes": ["S", "M", "L", "XL"],
     "stock": 55
@@ -104,9 +140,238 @@
     "price": 2199,
     "discount": 0,
     "category": "Formal",
-    "images": ["https://loremflickr.com/600/600/oxfordshirt"],
+    "images": [
+      "https://loremflickr.com/600/600/oxfordshirt?lock=128",
+      "https://loremflickr.com/600/600/oxfordshirt?lock=129",
+      "https://loremflickr.com/600/600/oxfordshirt?lock=130"
+    ],
     "colors": ["#FFFFFF", "#ADD8E6", "#F5F5DC"],
     "sizes": ["S", "M", "L", "XL", "XXL"],
+    "stock": 35
+  },
+  {
+    "title": "Oversized Graphic T-Shirt",
+    "description": "A relaxed oversized t-shirt with a modern graphic design and soft cotton fabric.",
+    "price": 1199,
+    "discount": 10,
+    "category": "Casual",
+    "images": [
+      "https://loremflickr.com/600/600/tshirt?lock=131",
+      "https://loremflickr.com/600/600/tshirt?lock=132",
+      "https://loremflickr.com/600/600/tshirt?lock=133"
+    ],
+    "colors": ["#000000", "#FFFFFF", "#808080"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 80
+  },
+  {
+    "title": "Classic Polo Shirt",
+    "description": "A versatile polo shirt with a clean collar and comfortable everyday fit.",
+    "price": 1399,
+    "discount": 5,
+    "category": "Casual",
+    "images": [
+      "https://loremflickr.com/600/600/poloshirt?lock=134",
+      "https://loremflickr.com/600/600/poloshirt?lock=135",
+      "https://loremflickr.com/600/600/poloshirt?lock=136"
+    ],
+    "colors": ["#000080", "#FFFFFF", "#800000"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 65
+  },
+  {
+    "title": "Linen Formal Trousers",
+    "description": "Lightweight tailored trousers designed for comfortable and polished formal wear.",
+    "price": 2399,
+    "discount": 10,
+    "category": "Formal",
+    "images": [
+      "https://loremflickr.com/600/600/trousers?lock=137",
+      "https://loremflickr.com/600/600/trousers?lock=138",
+      "https://loremflickr.com/600/600/trousers?lock=139"
+    ],
+    "colors": ["#F5F5DC", "#808080", "#000000"],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "stock": 28
+  },
+  {
+    "title": "Classic Suit Vest",
+    "description": "A refined suit vest that adds a polished finishing touch to formal outfits.",
+    "price": 2899,
+    "discount": 15,
+    "category": "Formal",
+    "images": [
+      "https://loremflickr.com/600/600/suitvest?lock=140",
+      "https://loremflickr.com/600/600/suitvest?lock=141",
+      "https://loremflickr.com/600/600/suitvest?lock=142"
+    ],
+    "colors": ["#1C1C1C", "#708090"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 18
+  },
+  {
+    "title": "Velvet Evening Gown",
+    "description": "An elegant velvet gown designed for formal dinners, celebrations, and evening events.",
+    "price": 4599,
+    "discount": 20,
+    "category": "Party",
+    "images": [
+      "https://loremflickr.com/600/600/eveninggown?lock=143",
+      "https://loremflickr.com/600/600/eveninggown?lock=144",
+      "https://loremflickr.com/600/600/eveninggown?lock=145"
+    ],
+    "colors": ["#800020", "#000000", "#191970"],
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 12
+  },
+  {
+    "title": "Satin Party Blouse",
+    "description": "A smooth satin blouse with an elegant finish for parties and special occasions.",
+    "price": 1999,
+    "discount": 10,
+    "category": "Party",
+    "images": [
+      "https://loremflickr.com/600/600/blouse?lock=146",
+      "https://loremflickr.com/600/600/blouse?lock=147",
+      "https://loremflickr.com/600/600/blouse?lock=148"
+    ],
+    "colors": ["#FFC0CB", "#000000", "#F5F5DC"],
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 32
+  },
+  {
+    "title": "Athletic Running Shorts",
+    "description": "Lightweight running shorts designed for unrestricted movement and intense workouts.",
+    "price": 899,
+    "discount": 5,
+    "category": "Gym",
+    "images": [
+      "https://loremflickr.com/600/600/runningshorts?lock=149",
+      "https://loremflickr.com/600/600/runningshorts?lock=150",
+      "https://loremflickr.com/600/600/runningshorts?lock=151"
+    ],
+    "colors": ["#000000", "#1E90FF", "#FF0000"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 90
+  },
+  {
+    "title": "Training Sweatshirt",
+    "description": "A warm athletic sweatshirt suitable for outdoor training and cool-weather workouts.",
+    "price": 1899,
+    "discount": 10,
+    "category": "Gym",
+    "images": [
+      "https://loremflickr.com/600/600/sweatshirt?lock=152",
+      "https://loremflickr.com/600/600/sweatshirt?lock=153",
+      "https://loremflickr.com/600/600/sweatshirt?lock=154"
+    ],
+    "colors": ["#000000", "#696969", "#1E3A5F"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 45
+  },
+  {
+    "title": "High Waist Training Shorts",
+    "description": "Stretchable high-waist shorts offering comfort and support during gym sessions.",
+    "price": 1099,
+    "discount": 0,
+    "category": "Gym",
+    "images": [
+      "https://loremflickr.com/600/600/gymshorts?lock=155",
+      "https://loremflickr.com/600/600/gymshorts?lock=156",
+      "https://loremflickr.com/600/600/gymshorts?lock=157"
+    ],
+    "colors": ["#000000", "#800080", "#2F4F4F"],
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 58
+  },
+  {
+    "title": "Canvas Casual Sneakers",
+    "description": "Classic canvas sneakers designed for comfortable everyday walking and casual outfits.",
+    "price": 2299,
+    "discount": 15,
+    "category": "Casual",
+    "images": [
+      "https://loremflickr.com/600/600/sneakers?lock=158",
+      "https://loremflickr.com/600/600/sneakers?lock=159",
+      "https://loremflickr.com/600/600/sneakers?lock=160"
+    ],
+    "colors": ["#FFFFFF", "#000000", "#808080"],
+    "sizes": ["39", "40", "41", "42", "43", "44"],
+    "stock": 42
+  },
+  {
+    "title": "Leather Chelsea Boots",
+    "description": "Classic leather Chelsea boots with a sleek silhouette suitable for smart casual outfits.",
+    "price": 4299,
+    "discount": 10,
+    "category": "Formal",
+    "images": [
+      "https://loremflickr.com/600/600/chelseaboots?lock=161",
+      "https://loremflickr.com/600/600/chelseaboots?lock=162",
+      "https://loremflickr.com/600/600/chelseaboots?lock=163"
+    ],
+    "colors": ["#000000", "#5C4033"],
+    "sizes": ["39", "40", "41", "42", "43", "44"],
+    "stock": 22
+  },
+  {
+    "title": "Party Jumpsuit",
+    "description": "A stylish modern jumpsuit designed for parties, dinners, and special events.",
+    "price": 3799,
+    "discount": 15,
+    "category": "Party",
+    "images": [
+      "https://loremflickr.com/600/600/jumpsuit?lock=164",
+      "https://loremflickr.com/600/600/jumpsuit?lock=165",
+      "https://loremflickr.com/600/600/jumpsuit?lock=166"
+    ],
+    "colors": ["#000000", "#800080", "#D4AF37"],
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 16
+  },
+  {
+    "title": "Ribbed Casual Cardigan",
+    "description": "A cozy ribbed cardigan designed for layering during cool days and relaxed outings.",
+    "price": 2199,
+    "discount": 10,
+    "category": "Casual",
+    "images": [
+      "https://loremflickr.com/600/600/cardigan?lock=167",
+      "https://loremflickr.com/600/600/cardigan?lock=168",
+      "https://loremflickr.com/600/600/cardigan?lock=169"
+    ],
+    "colors": ["#F5F5DC", "#808080", "#8B4513"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 38
+  },
+  {
+    "title": "Classic Formal Waistcoat",
+    "description": "A sophisticated waistcoat designed to complement formal shirts and tailored trousers.",
+    "price": 2599,
+    "discount": 5,
+    "category": "Formal",
+    "images": [
+      "https://loremflickr.com/600/600/waistcoat?lock=170",
+      "https://loremflickr.com/600/600/waistcoat?lock=171",
+      "https://loremflickr.com/600/600/waistcoat?lock=172"
+    ],
+    "colors": ["#1C1C1C", "#708090", "#5C4033"],
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 20
+  },
+  {
+    "title": "Lightweight Gym Hoodie",
+    "description": "A lightweight performance hoodie designed for warm-ups, training, and outdoor workouts.",
+    "price": 2099,
+    "discount": 10,
+    "category": "Gym",
+    "images": [
+      "https://loremflickr.com/600/600/sportshoodie?lock=173",
+      "https://loremflickr.com/600/600/sportshoodie?lock=174",
+      "https://loremflickr.com/600/600/sportshoodie?lock=175"
+    ],
+    "colors": ["#000000", "#1E90FF", "#696969"],
+    "sizes": ["S", "M", "L", "XL"],
     "stock": 35
   }
 ]

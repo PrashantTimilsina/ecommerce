@@ -3,7 +3,7 @@ export type Review = {
   user: {
     name: string;
     _id: string;
-  };
+  } | null;
   product: string;
   rating: number;
   comment: string;

@@ -34,7 +34,17 @@ function Section({
   );
 }
 
-export function Filters({ product }: { product: Product[] }) {
+export function Filters({
+  product,
+  category,
+  sizes,
+  colors,
+}: {
+  product: Product[];
+  category?: string;
+  sizes?: string;
+  colors?: string;
+}) {
   const options = getFilterOptions(product);
 
   const router = useRouter();
@@ -74,16 +84,17 @@ export function Filters({ product }: { product: Product[] }) {
         {/* Category — single select */}
         <Section title="Category">
           <ul className="flex flex-col gap-2.5">
-            {options.categories.map((category) => (
-              <li key={category}>
+            {options.categories.map((cat) => (
+              <li key={cat}>
                 <label className="flex cursor-pointer items-center gap-2.5 text-sm text-muted-foreground">
                   <input
                     type="radio"
                     name="category"
-                    value={category}
+                    value={cat}
+                    defaultChecked={category === cat}
                     className="h-4 w-4 accent-black"
                   />
-                  <span>{category}</span>
+                  <span>{cat}</span>
                 </label>
               </li>
             ))}
@@ -103,6 +114,7 @@ export function Filters({ product }: { product: Product[] }) {
                   type="radio"
                   name="colors"
                   value={color}
+                  defaultChecked={colors === color}
                   className="peer sr-only"
                 />
                 <span
@@ -129,6 +141,7 @@ export function Filters({ product }: { product: Product[] }) {
                   type="radio"
                   name="sizes"
                   value={size}
+                  defaultChecked={sizes === size}
                   className="peer sr-only"
                 />
                 <span className="block rounded-full border border-border px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors peer-checked:border-black peer-checked:bg-black peer-checked:text-white">

@@ -34,7 +34,7 @@ export default function EsewaPayment() {
       if (data.esewaConfig) {
         const form = document.createElement("form");
         form.method = "POST";
-        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+        form.action = `${process.env.NEXT_PUBLIC_ESEWA_PAYMENT_URL ?? "https://rc-epay.esewa.com.np/api/epay/main/v2/form"}`;
         Object.entries(data.esewaConfig).forEach(([k, v]) => {
           const input = document.createElement("input");
           input.type = "hidden";

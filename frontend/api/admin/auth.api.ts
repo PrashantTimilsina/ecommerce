@@ -20,7 +20,9 @@ export const getAllUsers = async (search?: string, limit?: number) => {
   if (search) params.set("search", search);
   if (limit) params.set("limit", String(limit));
   const queryString = params.toString();
-  const url = queryString ? `${END_POINTS.ADMIN.USERS}?${queryString}` : END_POINTS.ADMIN.USERS;
+  const url = queryString
+    ? `${END_POINTS.ADMIN.USERS}?${queryString}`
+    : END_POINTS.ADMIN.USERS;
   const response = await myFetch(url, {
     headers: {
       "Content-Type": "application/json",

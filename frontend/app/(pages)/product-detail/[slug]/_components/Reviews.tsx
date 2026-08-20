@@ -64,7 +64,7 @@ function ReviewCard({
   userId: string;
   slug: string;
 }) {
-  const isReviewOfCurrentUser = review.user._id === userId;
+  const isReviewOfCurrentUser = review.user?._id === userId;
 
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -123,7 +123,9 @@ function ReviewCard({
         </div>
 
         <div className="flex items-center gap-1.5">
-          <h3 className="font-bold text-base">{review.user.name}</h3>
+          <h3 className="font-bold text-base">
+            {review.user?.name ?? "Deleted User"}
+          </h3>
           <BadgeCheck className="h-4 w-4 text-green-500 fill-green-500/20" />
         </div>
 

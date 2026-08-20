@@ -23,14 +23,14 @@ export async function POST(req: Request) {
           product_code: process.env.NEXT_PUBLIC_ESEWA_MERCHANT_CODE!,
           product_service_charge: "0",
           product_delivery_charge: "0",
-          success_url: `${process.env.NEXT_PUBLIC_APIURL}/success?method=esewa`,
-          failure_url: `${process.env.NEXT_PUBLIC_APIURL}/failure`,
+          success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?method=esewa`,
+          failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/failure?method=esewa`,
           signed_field_names: "total_amount,transaction_uuid,product_code",
         };
 
         const signatureString = `total_amount=${esewaConfig.total_amount},transaction_uuid=${esewaConfig.transaction_uuid},product_code=${esewaConfig.product_code}`;
         const signature = generateEsewaSignature(
-          process.env.NEXT_PUBLIC_ESEWA_SECRET_KEY!,
+          process.env.ESEWA_SECRET_KEY!,
           signatureString,
         );
 

@@ -69,7 +69,7 @@
     "productSlug": "tailored-blazer",
     "userEmail": "sneha@example.com",
     "rating": 5,
-    "comment": "Fit like it was made for me, great for interviews."
+    "comment": "Fits like it was made for me, great for interviews."
   },
   {
     "productSlug": "metallic-cocktail-top",
@@ -94,5 +94,185 @@
     "userEmail": "priya@example.com",
     "rating": 5,
     "comment": "Crisp and clean, exactly what I needed for work."
+  },
+  {
+    "productSlug": "oversized-graphic-t-shirt",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Really comfortable and the oversized fit looks great."
+  },
+  {
+    "productSlug": "oversized-graphic-t-shirt",
+    "userEmail": "sneha@example.com",
+    "rating": 4,
+    "comment": "Nice design and soft fabric, would buy another one."
+  },
+  {
+    "productSlug": "classic-polo-shirt",
+    "userEmail": "rohan@example.com",
+    "rating": 5,
+    "comment": "Simple and stylish polo with a very comfortable fit."
+  },
+  {
+    "productSlug": "classic-polo-shirt",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Good everyday shirt and the material feels durable."
+  },
+  {
+    "productSlug": "linen-formal-trousers",
+    "userEmail": "priya@example.com",
+    "rating": 5,
+    "comment": "Very comfortable trousers and perfect for summer."
+  },
+  {
+    "productSlug": "linen-formal-trousers",
+    "userEmail": "rohan@example.com",
+    "rating": 4,
+    "comment": "Good fit and lightweight material."
+  },
+  {
+    "productSlug": "classic-suit-vest",
+    "userEmail": "bikash@example.com",
+    "rating": 5,
+    "comment": "Looks very elegant with my formal shirt."
+  },
+  {
+    "productSlug": "classic-suit-vest",
+    "userEmail": "sneha@example.com",
+    "rating": 4,
+    "comment": "Good quality and the stitching looks neat."
+  },
+  {
+    "productSlug": "velvet-evening-gown",
+    "userEmail": "priya@example.com",
+    "rating": 5,
+    "comment": "Beautiful gown with a premium velvet finish."
+  },
+  {
+    "productSlug": "velvet-evening-gown",
+    "userEmail": "sneha@example.com",
+    "rating": 5,
+    "comment": "The dress looked amazing at the event."
+  },
+  {
+    "productSlug": "satin-party-blouse",
+    "userEmail": "priya@example.com",
+    "rating": 4,
+    "comment": "Lovely satin material and very comfortable for parties."
+  },
+  {
+    "productSlug": "satin-party-blouse",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Looks stylish and feels much more expensive than the price."
+  },
+  {
+    "productSlug": "athletic-running-shorts",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Lightweight and perfect for running."
+  },
+  {
+    "productSlug": "athletic-running-shorts",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Good shorts for training and they dry quickly."
+  },
+  {
+    "productSlug": "training-sweatshirt",
+    "userEmail": "rohan@example.com",
+    "rating": 5,
+    "comment": "Keeps me warm during early morning workouts."
+  },
+  {
+    "productSlug": "training-sweatshirt",
+    "userEmail": "aayush@example.com",
+    "rating": 4,
+    "comment": "Comfortable and lightweight enough for warm-ups."
+  },
+  {
+    "productSlug": "high-waist-training-shorts",
+    "userEmail": "sneha@example.com",
+    "rating": 5,
+    "comment": "Great stretch and stays comfortable throughout my workout."
+  },
+  {
+    "productSlug": "high-waist-training-shorts",
+    "userEmail": "priya@example.com",
+    "rating": 4,
+    "comment": "Nice fit and good material for gym sessions."
+  },
+  {
+    "productSlug": "canvas-casual-sneakers",
+    "userEmail": "rohan@example.com",
+    "rating": 5,
+    "comment": "Very comfortable sneakers for everyday use."
+  },
+  {
+    "productSlug": "canvas-casual-sneakers",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Good looking shoes and they fit perfectly."
+  },
+  {
+    "productSlug": "leather-chelsea-boots",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Premium looking boots with excellent finishing."
+  },
+  {
+    "productSlug": "leather-chelsea-boots",
+    "userEmail": "rohan@example.com",
+    "rating": 4,
+    "comment": "Great for formal outfits and comfortable enough for long days."
+  },
+  {
+    "productSlug": "party-jumpsuit",
+    "userEmail": "sneha@example.com",
+    "rating": 5,
+    "comment": "Stylish and comfortable, perfect for a night out."
+  },
+  {
+    "productSlug": "party-jumpsuit",
+    "userEmail": "priya@example.com",
+    "rating": 4,
+    "comment": "Looks great and the fabric feels comfortable."
+  },
+  {
+    "productSlug": "ribbed-casual-cardigan",
+    "userEmail": "priya@example.com",
+    "rating": 5,
+    "comment": "Soft and cozy cardigan, perfect for chilly evenings."
+  },
+  {
+    "productSlug": "ribbed-casual-cardigan",
+    "userEmail": "sneha@example.com",
+    "rating": 4,
+    "comment": "Nice texture and easy to pair with casual outfits."
+  },
+  {
+    "productSlug": "classic-formal-waistcoat",
+    "userEmail": "bikash@example.com",
+    "rating": 5,
+    "comment": "Great addition to my formal wardrobe and fits perfectly."
+  },
+  {
+    "productSlug": "classic-formal-waistcoat",
+    "userEmail": "rohan@example.com",
+    "rating": 4,
+    "comment": "Looks professional and the material feels good."
+  },
+  {
+    "productSlug": "lightweight-gym-hoodie",
+    "userEmail": "aayush@example.com",
+    "rating": 5,
+    "comment": "Perfect for warm-ups and outdoor workouts."
+  },
+  {
+    "productSlug": "lightweight-gym-hoodie",
+    "userEmail": "bikash@example.com",
+    "rating": 4,
+    "comment": "Lightweight and comfortable with a good athletic fit."
   }
 ]

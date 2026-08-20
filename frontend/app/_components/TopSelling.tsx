@@ -6,7 +6,7 @@ import { Product } from "@/types/product";
 import Link from "next/link";
 
 function TopSelling({ products: defaultProduct }: { products: Product[] }) {
-  const products = defaultProduct.slice(0, 4);
+  const products = defaultProduct.slice(2, 14);
   return (
     <section className="w-full py-8 sm:py-10 md:py-12">
       <div className="container mx-auto px-4">

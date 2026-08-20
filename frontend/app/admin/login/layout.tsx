@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Toaster } from "@/components/ui/toast";
 
-export default async function AuthLayout({
+export default async function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -10,8 +9,8 @@ export default async function AuthLayout({
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
   if (token) {
-    redirect("/");
+    redirect("/admin");
   }
 
-  return <div className="min-h-screen flex items-center justify-center">{children}<Toaster/></div>;
+  return <>{children}</>;
 }

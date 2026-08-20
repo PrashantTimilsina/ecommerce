@@ -36,7 +36,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       <div className="flex flex-col gap-8 lg:flex-row">
         {/* Sidebar */}
         <div className="lg:w-72 lg:shrink-0">
-          <Filters product={products} />
+          <Filters product={products} category={category} sizes={sizes} colors={colors} />
         </div>
 
         <div className="flex-1">

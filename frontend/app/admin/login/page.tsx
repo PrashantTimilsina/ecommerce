@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toast";
 
-import { dummyAdminCredentials } from "../_components/data";
-
 import { loginAction } from "@/action/admin/auth.action";
 
 export default function AdminLoginPage() {
@@ -23,7 +21,7 @@ export default function AdminLoginPage() {
     const session = await loginAction(email, password);
     console.log(session);
     if (!session) {
-      setError("Invalid email or password. Use the demo credentials below.");
+      setError("Invalid email or password.");
       toast.add({
         title: "Login failed",
         description: "Invalid email or password.",
@@ -38,12 +36,6 @@ export default function AdminLoginPage() {
       type: "success",
     });
     router.replace("/admin");
-  }
-
-  function fillDemo() {
-    setEmail(dummyAdminCredentials.email);
-    setPassword(dummyAdminCredentials.password);
-    setError("");
   }
 
   return (
@@ -167,23 +159,6 @@ export default function AdminLoginPage() {
               Sign in
             </button>
           </form>
-
-          <div className="mt-5 rounded-lg border border-dashed border-border bg-muted/40 p-3">
-            <div className="mb-1.5 flex items-center justify-between">
-              <p className="text-xs font-medium text-muted-foreground">
-                Demo credentials
-              </p>
-              <button
-                type="button"
-                onClick={fillDemo}
-                className="cursor-pointer text-xs font-medium text-primary hover:underline"
-              >
-                Auto-fill
-              </button>
-            </div>
-            <p className="font-mono text-xs text-foreground">admin@shop.co</p>
-            <p className="font-mono text-xs text-foreground">admin123</p>
-          </div>
         </div>
       </div>
     </div>
