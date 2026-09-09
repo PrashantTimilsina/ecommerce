@@ -8,15 +8,17 @@ interface OrderSummaryProps {
   subtotal: number;
   discountPercent: number;
   deliveryFee: number;
+  disabled?: boolean;
 }
 
 function OrderSummary({
   subtotal,
   discountPercent,
   deliveryFee,
+  disabled,
 }: OrderSummaryProps) {
   const discountAmount = Math.round((subtotal * discountPercent) / 100);
-  const total = subtotal - discountAmount + deliveryFee;
+  const total = Math.round(subtotal - discountAmount + deliveryFee);
   const router = useRouter();
   function handleCheckout() {
     router.push(`/esewa?total=${total}`);
@@ -54,6 +56,7 @@ function OrderSummary({
 
       <Button
         onClick={handleCheckout}
+        disabled={disabled}
         className="rounded-full h-12 text-base cursor-pointer flex items-center justify-center gap-2"
       >
         Go to Checkout

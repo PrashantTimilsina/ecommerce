@@ -33,7 +33,7 @@ export type AdminViewId =
   | "products-add";
 
 export const adminViewPaths: Record<AdminViewId, string> = {
-  dashboard: "/admin",
+  dashboard: "/admin/dashboard",
   "users-all": "/admin/users",
   "users-add": "/admin/users/add",
   "products-all": "/admin/products",
@@ -120,7 +120,7 @@ function SidebarContent({
     logoutAction();
     logoutAdmin();
     toast.add({ title: "Logged out", type: "success" });
-    router.replace("/admin/login");
+    router.replace("/admin");
   }
 
   function handleViewChange(view: AdminViewId) {

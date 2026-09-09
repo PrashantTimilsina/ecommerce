@@ -1,19 +1,19 @@
 // /app/api/verify-payment/route.ts
 import { NextResponse } from "next/server";
 import { verifyEsewaSignature } from "@/lib/generate-signature";
-import { checkEsewaTransactionStatus } from "@/lib/esewa-status";
+import { orderBackend } from "@/lib/order-backend";
 
 export async function POST(req: Request) {
   try {
-    const { data, method } = await req.json();
+    const { data, method = "esewa" } = await req.json();
 
-    if (!data) {
+    if (typeof data !== "string" || !data || data.length > 16000) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
     if (method === "esewa") {
       const decoded = JSON.parse(
-        Buffer.from(data, "base64").toString("utf-8"),
+        Buffer.from(data.replace(/ /g, "+"), "base64").toString("utf-8"),
       ) as Record<string, unknown>;
 
       const isValid = verifyEsewaSignature(
@@ -28,27 +28,8 @@ export async function POST(req: Request) {
         );
       }
 
-      const statusCheck = await checkEsewaTransactionStatus({
-        productCode: String(decoded.product_code ?? ""),
-        totalAmount: Number(decoded.total_amount ?? 0),
-        transactionUuid: String(decoded.transaction_uuid ?? ""),
-      });
-
-      const callbackStatus = String(decoded.status ?? "");
-      const statusUnavailable =
-        statusCheck.code === 0 || typeof statusCheck.status !== "string";
-
-      const confirmed =
-        statusCheck.status === "COMPLETE" ||
-        (statusUnavailable && callbackStatus === "COMPLETE");
-
-      return NextResponse.json({
-        valid: true,
-        confirmed,
-        status: statusCheck.status ?? callbackStatus,
-        refId: statusCheck.ref_id,
+      return await orderBackend("confirm", {
         transactionUuid: decoded.transaction_uuid,
-        totalAmount: decoded.total_amount,
       });
     }
 
@@ -58,7 +39,7 @@ export async function POST(req: Request) {
     );
   } catch (err) {
     return NextResponse.json(
-      { error: "Server error", details: String(err) },
+      { error: "Unable to verify and save your order. Refresh to retry; do not pay again." },
       { status: 500 },
     );
   }

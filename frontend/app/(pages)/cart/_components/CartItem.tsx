@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Trash2, Minus, Plus } from "lucide-react";
-import { removeFromCartAction } from "@/action/product.action";
+import { removeFromCartAction, updateCartQuantityAction } from "@/action/product.action";
 
 export interface CartItemData {
   name: string;
@@ -16,27 +16,46 @@ export interface CartItemData {
 
 interface CartItemProps {
   item: CartItemData;
-  onQuantityChange?: (name: string, quantity: number) => void;
-  onRemove?: (name: string) => void;
+  onQuantityChange?: (item: CartItemData, quantity: number, price: number) => void;
+  onRemove?: (item: CartItemData) => void;
+  busy?: boolean;
+  onBusyChange?: (busy: boolean) => void;
 }
 
-function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
-  const [quantity, setQuantity] = useState(item.quantity);
+function CartItem({ item, onQuantityChange, onRemove, busy, onBusyChange }: CartItemProps) {
+  const quantity = item.quantity;
+  const [error, setError] = useState("");
 
-  const updateQuantity = (next: number) => {
+  const updateQuantity = async (next: number) => {
+    if (busy) return;
     const clamped = Math.max(1, next);
-    setQuantity(clamped);
-    onQuantityChange?.(item.name, clamped);
+    setError("");
+    onBusyChange?.(true);
+    try {
+      const response = await updateCartQuantityAction({ product: item.name, size: item.size, color: item.color, quantity: clamped });
+      if (response.status) onQuantityChange?.(item, response.data.quantity, response.data.price);
+      else setError(response.message);
+    } catch {
+      setError("Could not update quantity. Please try again.");
+    } finally { onBusyChange?.(false); }
   };
   async function handleRemove() {
+    if (busy) return;
+    onBusyChange?.(true);
+    setError("");
+    try {
     const response = await removeFromCartAction({
       product: item.name,
       size: item.size,
       color: item.color,
     });
     if (response.status) {
-      onRemove?.(item.name);
+      onRemove?.(item);
+    } else {
+      setError(response.message);
     }
+    } catch { setError("Could not remove item. Please try again."); }
+    finally { onBusyChange?.(false); }
   }
 
   return (
@@ -68,6 +87,7 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
           <button
             type="button"
             onClick={handleRemove}
+            disabled={busy}
             aria-label={`Remove ${item.name}`}
             className="text-red-500 hover:text-red-600 cursor-pointer shrink-0"
           >
@@ -84,6 +104,7 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
             <button
               type="button"
               onClick={() => updateQuantity(quantity - 1)}
+              disabled={busy || quantity <= 1}
               aria-label="Decrease quantity"
               className="cursor-pointer"
             >
@@ -95,6 +116,7 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
             <button
               type="button"
               onClick={() => updateQuantity(quantity + 1)}
+              disabled={busy}
               aria-label="Increase quantity"
               className="cursor-pointer"
             >
@@ -102,6 +124,7 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
             </button>
           </div>
         </div>
+        {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
       </div>
     </div>
   );

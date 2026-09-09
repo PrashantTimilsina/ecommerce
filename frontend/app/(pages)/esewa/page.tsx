@@ -21,7 +21,7 @@ function EsewaPayment() {
   const searchParams = useSearchParams();
   const total = searchParams.get("total") as string;
 
-  const [amount, setAmount] = useState(total);
+  const amount = total;
   const [productName, setProductName] = useState("Test Product");
   const [transactionId, setTransactionId] = useState("txn-123");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -59,7 +59,7 @@ function EsewaPayment() {
         document.body.appendChild(form);
         form.submit();
       } else {
-        setError("Something went wrong initiating payment. Please try again.");
+        setError(data.error ?? "Something went wrong initiating payment. Please try again.");
         setIsProcessing(false);
       }
     } catch (err) {
@@ -103,7 +103,7 @@ function EsewaPayment() {
               </label>
               <input
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                readOnly
                 type="number"
                 className="mt-1 border border-gray-200 bg-gray-50 rounded-lg p-3 w-full text-sm text-black focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition"
                 placeholder="0.00"

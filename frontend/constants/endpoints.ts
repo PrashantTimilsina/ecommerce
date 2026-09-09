@@ -5,6 +5,7 @@ const END_POINTS = {
   LOGIN: `${API}/users/login/`,
   SIGNUP: `${API}/users/signup/`,
   CART: `${API}/users/add-to-cart/`,
+  CART_QUANTITY: `${API}/users/cart-quantity/`,
   ME: `${API}/users/me/`,
   REMOVE_FROM_CART: `${API}/users/remove-from-cart/`,
   CHANGE_PASSWORD: `${API}/users/change-password/`,

@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  allowedDevOrigins: ["dev.timilsinaprashant.com.np"],
   images: {
     remotePatterns: [
       {

@@ -2,6 +2,7 @@
 
 import {
   addToCart,
+  updateCartQuantity,
   removeFromCart,
   RemoveFromCartPayload,
 } from "@/api/product.api";
@@ -26,4 +27,7 @@ export const addToCartAction = async (payload: AddToCartPayload) => {
 };
 export const removeFromCartAction = async (payload: RemoveFromCartPayload) => {
   return await removeFromCart(payload);
+};
+export const updateCartQuantityAction = async (payload: RemoveFromCartPayload & { quantity: number }) => {
+  return updateCartQuantity(payload);
 };

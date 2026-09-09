@@ -51,6 +51,7 @@ router.patch(
 
 router.delete("/me", authMiddleware.protect, userController.deleteUserProfile);
 router.post("/add-to-cart", authMiddleware.protect, userController.addToCart);
+router.patch("/cart-quantity", authMiddleware.protect, userController.updateCartQuantity);
 router.post(
   "/remove-from-cart",
   authMiddleware.protect,

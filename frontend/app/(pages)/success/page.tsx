@@ -4,11 +4,11 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
+import { readEsewaCallback } from "@/lib/esewa-callback";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const method = searchParams.get("method");
-  const data = searchParams.get("data");
+  const { method, data } = readEsewaCallback(searchParams);
 
   const [state, setState] = useState<{
     loading: boolean;
@@ -20,7 +20,7 @@ function SuccessContent() {
   useEffect(() => {
     async function verify() {
       if (method !== "esewa" || !data) {
-        setState({ loading: false, error: "Invalid payment callback" });
+        setState({ loading: false, error: "Payment details are missing or unsupported in this return URL. If you have paid, do not pay again; keep your eSewa reference and contact support." });
         return;
       }
 

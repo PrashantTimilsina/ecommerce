@@ -1,7 +1,7 @@
 // /app/api/initiate-payment/route.ts
 import { generateEsewaSignature } from "@/lib/generate-signature";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
+import { orderBackend } from "@/lib/order-backend";
 
 export async function POST(req: Request) {
   try {
@@ -13,17 +13,23 @@ export async function POST(req: Request) {
 
     switch (method) {
       case "esewa": {
-        const transactionUuid = `${Date.now()}-${uuidv4()}`;
+        if (!process.env.ESEWA_SECRET_KEY || !process.env.NEXT_PUBLIC_BASE_URL) {
+          return NextResponse.json({ error: "eSewa is not configured." }, { status: 503 });
+        }
+        const checkoutResponse = await orderBackend("checkout", { amount });
+        if (!checkoutResponse.ok) return checkoutResponse;
+        const checkout = await checkoutResponse.json();
+        const transactionUuid = checkout.transactionUuid;
 
         const esewaConfig = {
-          amount,
+          amount: checkout.totalAmount,
           tax_amount: "0",
-          total_amount: amount,
+          total_amount: checkout.totalAmount,
           transaction_uuid: transactionUuid,
-          product_code: process.env.NEXT_PUBLIC_ESEWA_MERCHANT_CODE!,
+          product_code: checkout.productCode,
           product_service_charge: "0",
           product_delivery_charge: "0",
-          success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?method=esewa`,
+          success_url: new URL("/success", process.env.NEXT_PUBLIC_BASE_URL).toString(),
           failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/failure?method=esewa`,
           signed_field_names: "total_amount,transaction_uuid,product_code",
         };

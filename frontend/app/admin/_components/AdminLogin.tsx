@@ -6,7 +6,7 @@ import { toast } from "@/components/ui/toast";
 
 import { loginAction } from "@/action/admin/auth.action";
 
-export default function AdminLoginPage() {
+export default function AdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,11 +20,21 @@ export default function AdminLoginPage() {
 
     const session = await loginAction(email, password);
     console.log(session);
-    if (!session) {
+    if (!session?.status) {
       setError("Invalid email or password.");
       toast.add({
         title: "Login failed",
         description: "Invalid email or password.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (session.data?.user?.role !== "admin") {
+      setError("You are not authorized to access the admin panel.");
+      toast.add({
+        title: "Access denied",
+        description: "You are not authorized to access the admin panel.",
         type: "error",
       });
       return;
@@ -35,7 +45,7 @@ export default function AdminLoginPage() {
       description: `Signed in as admin`,
       type: "success",
     });
-    router.replace("/admin");
+    router.replace("/admin/dashboard");
   }
 
   return (

@@ -48,6 +48,14 @@ export type RemoveFromCartPayload = {
   size: string;
   color: string;
 };
+export const updateCartQuantity = async (payload: RemoveFromCartPayload & { quantity: number }) => {
+  const token = await getToken();
+  return myFetch<{ quantity: number; price: number }>(END_POINTS.CART_QUANTITY, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+};
 export const removeFromCart = async (payload: RemoveFromCartPayload) => {
   const token = await getToken();
   const response = await myFetch(`${END_POINTS.REMOVE_FROM_CART}`, {

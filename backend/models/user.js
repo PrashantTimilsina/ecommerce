@@ -56,6 +56,7 @@ const userSchema = new mongoose.Schema(
         price: { type: Number, required: true },
       },
     ],
+    clearedCartOrders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
     resetToken: String,
     resetTokenExpiry: Date,
     role: {

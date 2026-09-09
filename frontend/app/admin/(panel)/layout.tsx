@@ -9,8 +9,20 @@ export default async function AdminPanelLayout({
 }) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
-  if (!token) {
-    redirect("/admin/login");
+
+  let role: string | undefined;
+  const userCookie = cookieStore.get("user");
+  if (userCookie) {
+    try {
+      role = JSON.parse(userCookie.value).role;
+    } catch {
+      role = undefined;
+    }
   }
+
+  if (!token || role !== "admin") {
+    redirect("/admin");
+  }
+
   return <AdminShell>{children}</AdminShell>;
 }

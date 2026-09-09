@@ -44,7 +44,7 @@ function ProductHero({ product }: { product: Product }) {
 
   const finalPrice =
     product.discount > 0
-      ? parseInt(
+      ? Number(
           (product.price - (product.price * product.discount) / 100).toFixed(2),
         )
       : product.price;
